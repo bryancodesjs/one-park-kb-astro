@@ -1,0 +1,80 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import CategorySearch from '../../components/CategorySearch.vue'
+import { getCollection } from 'astro:content'
+
+const stripMd = (id: string) => id.replace(/\.md$/, '')
+
+export async function getStaticPaths() {
+  const categories = await getCollection('categories')
+  return categories.map(cat => ({
+    params: { category: cat.id.replace(/\.md$/, '') },
+    props: { entry: cat },
+  }))
+}
+
+const { category } = Astro.params
+const { entry: cat } = Astro.props
+
+const allArticles = await getCollection('articles')
+
+const catArticles = allArticles
+  .filter(a => a.id.startsWith(category + '/'))
+  .sort((a, b) => a.data.order - b.data.order)
+  .map(a => {
+    const [catSlug, articleFile] = a.id.split('/')
+    return {
+      slug: stripMd(articleFile),
+      categorySlug: catSlug,
+      title: a.data.title,
+      summary: a.data.summary,
+      tags: a.data.tags,
+    }
+  })
+---
+
+<BaseLayout title={`${cat.data.name} — One Park Knowledge Base`}>
+  <div class="max-w-5xl mx-auto px-6 py-10">
+
+    <!-- Breadcrumb -->
+    <nav aria-label="Breadcrumb" class="mb-8">
+      <ol class="flex items-center gap-2 text-[13px] text-[#9CA3AF] font-medium list-none p-0 m-0 flex-wrap">
+        <li><a href="/" class="hover:text-[#014189] transition-colors no-underline">Home</a></li>
+        <li aria-hidden="true"><i class="ri-arrow-right-s-line"></i></li>
+        <li><a href="/browse" class="hover:text-[#014189] transition-colors no-underline">Browse</a></li>
+        <li aria-hidden="true"><i class="ri-arrow-right-s-line"></i></li>
+        <li class="text-[#0A1628] font-semibold" aria-current="page">{cat.data.name}</li>
+      </ol>
+    </nav>
+
+    <!-- Category header -->
+    <div class="flex items-start gap-5 mb-10 pb-8 border-b border-[#E2EDFE]">
+      <div
+        class="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0"
+        style={`background: ${cat.data.gradient}`}
+        aria-hidden="true"
+      >
+        <i class:list={[cat.data.icon, 'text-2xl text-white']} aria-hidden="true"></i>
+      </div>
+      <div>
+        <h1 class="text-[26px] md:text-[30px] font-extrabold text-[#0A1628] tracking-tight mb-1 leading-tight">
+          {cat.data.name}
+        </h1>
+        <p class="text-[15px] text-[#6B7280] m-0">{cat.data.description}</p>
+        <p class="text-[13px] font-semibold mt-2" style={`color: ${cat.data.color}`}>
+          {catArticles.length} {catArticles.length === 1 ? 'article' : 'articles'}
+        </p>
+      </div>
+    </div>
+
+    <!-- Search + article grid (Vue island) -->
+    <CategorySearch
+      client:load
+      articles={catArticles}
+      categoryColor={cat.data.color}
+      placeholder={`Search within ${cat.data.name}…`}
+      input-id="cat-search"
+    />
+
+  </div>
+</BaseLayout>

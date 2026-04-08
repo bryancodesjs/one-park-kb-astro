@@ -1,0 +1,204 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import CategoryCard from '../components/CategoryCard.astro'
+import SearchBar from '../components/SearchBar.vue'
+import { getCollection } from 'astro:content'
+
+const stripMd = (id: string) => id.replace(/\.md$/, '')
+
+const allCategories = await getCollection('categories')
+const allArticles   = await getCollection('articles')
+
+// Sort categories by order
+const categories = allCategories.sort((a, b) => a.data.order - b.data.order)
+
+// Featured = first 3
+const featuredCategories = categories.slice(0, 3)
+
+// Article count per category slug (catSlug = e.g. 'objection-handling')
+function articleCount(catSlug: string) {
+  return allArticles.filter(a => a.id.startsWith(catSlug + '/')).length
+}
+
+// Quick access articles (by quickAccess flag)
+const quickAccessArticles = allArticles
+  .filter(a => a.data.quickAccess)
+  .slice(0, 5)
+  .map(a => {
+    const [catSlug, articleFile] = a.id.split('/')
+    const articleSlug = stripMd(articleFile)
+    const cat = categories.find(c => stripMd(c.id) === catSlug)
+    return {
+      slug: articleSlug,
+      categorySlug: catSlug,
+      title: a.data.title,
+      readTime: a.data.readTime,
+      categoryName: cat?.data.name ?? '',
+      categoryGradient: cat?.data.gradient ?? '',
+      categoryColor: cat?.data.color ?? '#2563EB',
+      categoryIcon: cat?.data.icon ?? 'ri-file-text-line',
+    }
+  })
+
+// Data for the SearchBar Vue island
+const searchArticles = allArticles.map(a => {
+  const [catSlug, articleFile] = a.id.split('/')
+  return {
+    slug: stripMd(articleFile),
+    categorySlug: catSlug,
+    title: a.data.title,
+    summary: a.data.summary,
+    tags: a.data.tags,
+  }
+})
+
+const searchCategories = categories.map(c => ({
+  slug: stripMd(c.id),
+  name: c.data.name,
+  icon: c.data.icon,
+}))
+
+const recentSearches = [
+  'Current RBF loan rates',
+  'Handling spouse talk objection',
+  'Minimum FICO requirements',
+]
+---
+
+<BaseLayout title="Home — One Park Knowledge Base">
+  <div class="min-h-[calc(100vh-64px)] flex flex-col items-center pb-16">
+
+    <!-- ── Hero — light blue gradient band ──────────────────────────────────── -->
+    <div
+      class="w-full flex flex-col items-center px-6 relative overflow-hidden"
+      style="background: linear-gradient(180deg, #DBEAFE 0%, #EFF6FF 60%, #F7FAFD 100%);"
+    >
+      <img class="absolute left-[-200px] top-[40px] opacity-80" width="460" src="/hero-decor-1.png" alt="" aria-hidden="true" />
+      <img class="absolute right-[-20px] bottom-[-20px] opacity-50" width="180" src="/hero-decor-2.png" alt="" aria-hidden="true" />
+
+      <div class="flex flex-col py-14">
+        <!-- Heading -->
+        <div class="text-center mb-8">
+          <h1 class="text-[23.04px] md:text-[27.65px] font-extrabold text-[#1E3A5F] tracking-tight leading-tight">
+            Welcome back, Christina
+          </h1>
+          <p class="text-[15px] text-[#3B6EA5] mt-2 font-medium">
+            Find quick answers to keep your call moving.
+          </p>
+        </div>
+
+        <!-- Search bar (Vue island) -->
+        <div class="w-full max-w-[640px]">
+          <SearchBar
+            client:load
+            articles={searchArticles}
+            categories={searchCategories}
+            input-id="home-search"
+            dropdown-id="home-search-dropdown"
+          />
+
+          <!-- Recent searches -->
+          <div class="mt-4" aria-label="Recent searches">
+            <p class="text-[12px] font-semibold text-[#3B6EA5] uppercase tracking-widest mb-2.5">
+              Recent searches
+            </p>
+            <div class="flex flex-wrap gap-2">
+              {recentSearches.map(search => (
+                <a
+                  href={`/browse?q=${encodeURIComponent(search)}`}
+                  class="text-[13px] font-medium text-[#1E40AF] border border-[#BFDBFE] bg-white/80 px-3.5 py-1.5 rounded-full hover:bg-white hover:border-[#2563EB] transition-colors max-w-[200px] truncate focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#2563EB] focus-visible:outline-offset-2 no-underline"
+                >
+                  {search}
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Browse categories + Quick access ─────────────────────────────────── -->
+    <div class="w-full bg-white px-6 py-10 flex flex-col gap-10">
+
+      <!-- Browse categories -->
+      <section class="w-full mx-auto max-w-[640px]">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-[18px] font-bold text-[#0A1628] m-0">Browse categories</h2>
+          <a
+            href="/browse"
+            class="text-[13px] font-semibold text-[#2563EB] hover:text-[#1E40AF] transition-colors no-underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#2563EB] focus-visible:outline-offset-2 rounded"
+          >
+            View all
+          </a>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          {featuredCategories.map(cat => (
+            <CategoryCard
+              slug={stripMd(cat.id)}
+              name={cat.data.name}
+              icon={cat.data.icon}
+              gradient={cat.data.gradient}
+              showCount={true}
+              articleCount={articleCount(stripMd(cat.id))}
+            />
+          ))}
+        </div>
+      </section>
+
+      <!-- Quick access -->
+      <section class="w-full mx-auto max-w-[640px]">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-[18px] font-bold text-[#0A1628] m-0 flex items-center gap-2">
+            <i class="ri-flashlight-line text-[#F97316]" aria-hidden="true"></i>
+            Quick access
+          </h2>
+          <a
+            href="/browse"
+            class="text-[13px] font-semibold text-[#2563EB] hover:text-[#1E40AF] transition-colors no-underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#2563EB] focus-visible:outline-offset-2 rounded"
+          >
+            All resources
+          </a>
+        </div>
+
+        <div class="flex flex-col divide-y divide-[#E2EDFE] border border-[#E2EDFE] rounded-2xl overflow-hidden bg-white">
+          {quickAccessArticles.map(article => (
+            <a
+              href={`/browse/${article.categorySlug}/${article.slug}`}
+              class="qa-row flex items-center gap-4 px-5 py-4 hover:bg-[#F7FAFD] transition-colors group no-underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+              style={`--cat-color: ${article.categoryColor}`}
+            >
+              <div
+                class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
+                style={`background: ${article.categoryGradient}`}
+                aria-hidden="true"
+              >
+                <i class:list={[article.categoryIcon, 'text-sm text-white']} aria-hidden="true"></i>
+              </div>
+              <div class="flex flex-col min-w-0">
+                <span class="qa-title text-[14px] font-semibold text-[#0A1628] transition-colors truncate">
+                  {article.title}
+                </span>
+                <span class="text-[12px] text-[#9CA3AF]">
+                  {article.categoryName} · {article.readTime}
+                </span>
+              </div>
+              <i
+                class="qa-arrow ri-arrow-right-line ml-auto shrink-0 group-hover:translate-x-1 transition-transform text-sm"
+                aria-hidden="true"
+              ></i>
+            </a>
+          ))}
+        </div>
+      </section>
+
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+.qa-title { color: #0A1628; }
+.qa-arrow { color: var(--cat-color, #2563EB); }
+.qa-row:hover .qa-title { color: var(--cat-color, #2563EB); }
+.qa-row:focus-visible { outline-color: var(--cat-color, #2563EB); }
+</style>

@@ -1,0 +1,127 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro'
+import ResourceCard from '../../../components/ResourceCard.astro'
+import ArticleFeedback from '../../../components/ArticleFeedback.vue'
+import { getCollection, render } from 'astro:content'
+
+const stripMd = (id: string) => id.replace(/\.md$/, '')
+
+export async function getStaticPaths() {
+  const articles = await getCollection('articles')
+  return articles.map(a => {
+    const [category, articleFile] = a.id.split('/')
+    const article = articleFile.replace(/\.md$/, '')
+    return { params: { category, article }, props: { entry: a } }
+  })
+}
+
+const { category } = Astro.params
+const { entry } = Astro.props
+
+const allCategories = await getCollection('categories')
+const allArticles   = await getCollection('articles')
+
+const cat = allCategories.find(c => stripMd(c.id) === category)
+
+const relatedArticles = allArticles
+  .filter(a => a.id.startsWith(category + '/') && a.id !== entry.id)
+  .sort((a, b) => a.data.order - b.data.order)
+  .slice(0, 4)
+  .map(a => {
+    const [cs, articleFile] = a.id.split('/')
+    return {
+      slug: stripMd(articleFile),
+      categorySlug: cs,
+      title: a.data.title,
+      categoryColor: cat?.data.color,
+      categoryBg: cat?.data.bgColor,
+    }
+  })
+
+const { Content } = await render(entry)
+---
+
+<BaseLayout title={`${entry.data.title} — One Park Knowledge Base`}>
+  <div class="max-w-[780px] mx-auto px-6 py-10">
+
+    <!-- Breadcrumb -->
+    <nav aria-label="Breadcrumb" class="mb-8">
+      <ol class="flex items-center gap-2 text-[13px] text-[#9CA3AF] font-medium list-none p-0 m-0 flex-wrap">
+        <li><a href="/" class="hover:text-[#014189] transition-colors no-underline">Home</a></li>
+        <li aria-hidden="true"><i class="ri-arrow-right-s-line"></i></li>
+        <li><a href="/browse" class="hover:text-[#014189] transition-colors no-underline">Browse</a></li>
+        <li aria-hidden="true"><i class="ri-arrow-right-s-line"></i></li>
+        <li>
+          <a href={`/browse/${category}`} class="hover:text-[#014189] transition-colors no-underline">
+            {cat?.data.name}
+          </a>
+        </li>
+        <li aria-hidden="true"><i class="ri-arrow-right-s-line"></i></li>
+        <li class="text-[#0A1628] font-semibold truncate max-w-[180px]" aria-current="page">
+          {entry.data.title}
+        </li>
+      </ol>
+    </nav>
+
+    <!-- Article header -->
+    <div class="mb-8 pb-7 border-b border-[#E2EDFE]">
+      <div class="flex items-center gap-2 mb-4">
+        <a
+          href={`/browse/${category}`}
+          class="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest no-underline transition-colors"
+          style={cat ? `color: ${cat.data.color}` : 'color: #014189'}
+        >
+          <i class:list={[cat?.data.icon ?? 'ri-folder-line', 'text-xs']} aria-hidden="true"></i>
+          {cat?.data.name}
+        </a>
+        <span class="text-[#E2EDFE]" aria-hidden="true">·</span>
+        <span class="text-[11px] text-[#9CA3AF] font-medium">{entry.data.readTime} read</span>
+      </div>
+
+      <h1 class="text-[26px] md:text-[32px] font-extrabold text-[#0A1628] tracking-tight leading-tight mb-4">
+        {entry.data.title}
+      </h1>
+
+      <p class="text-[16px] text-[#6B7280] leading-relaxed mb-5 font-medium">
+        {entry.data.summary}
+      </p>
+
+      <div class="flex flex-wrap gap-2" role="list" aria-label="Article tags">
+        {entry.data.tags.map(tag => (
+          <span role="listitem" class="text-[12px] font-semibold text-[#014189] bg-[#E2EDFE] px-3 py-1 rounded-full">
+            {tag}
+          </span>
+        ))}
+      </div>
+    </div>
+
+    <!-- Article content -->
+    <article class="article-content">
+      <Content />
+    </article>
+
+    <!-- Feedback (Vue island) -->
+    <ArticleFeedback client:visible />
+
+    <!-- Related articles -->
+    {relatedArticles.length > 0 && (
+      <div class="mt-12">
+        <h2 class="text-[17px] font-bold text-[#0A1628] mb-5">
+          More in {cat?.data.name}
+        </h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {relatedArticles.map(rel => (
+            <ResourceCard
+              slug={rel.slug}
+              categorySlug={rel.categorySlug}
+              title={rel.title}
+              categoryColor={rel.categoryColor}
+              categoryBg={rel.categoryBg}
+            />
+          ))}
+        </div>
+      </div>
+    )}
+
+  </div>
+</BaseLayout>

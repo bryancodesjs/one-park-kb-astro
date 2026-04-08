@@ -1,0 +1,178 @@
+@import "tailwindcss";
+
+@theme {
+  --color-opf-blue: #014189;
+  --color-opf-dark-blue: #002A5A;
+  --color-opf-light-blue: #E2EDFE;
+  --color-opf-green: #8CED1E;
+  --color-surface: #F7FAFD;
+  --font-family-sans: 'Manrope', sans-serif;
+}
+
+* {
+  font-family: 'Manrope', sans-serif;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Article content styles ─────────────────────────────────────────────────── */
+.article-content {
+  color: #0A1628;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.article-content h2 {
+  font-size: 18px;
+  font-weight: 800;
+  color: #0A1628;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.01em;
+}
+
+.article-content h3 {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0A1628;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.article-content p {
+  margin-bottom: 1rem;
+  color: #374151;
+}
+
+.article-content ul,
+.article-content ol {
+  margin-bottom: 1rem;
+  padding-left: 1.25rem;
+}
+
+.article-content li {
+  margin-bottom: 0.4rem;
+  color: #374151;
+}
+
+.article-content li strong {
+  color: #0A1628;
+  font-weight: 700;
+}
+
+.article-content strong {
+  color: #0A1628;
+  font-weight: 700;
+}
+
+.article-content em {
+  font-style: italic;
+  color: #374151;
+}
+
+/* Script box */
+.article-content .script-box {
+  background: #E2EDFE;
+  border-left: 4px solid #014189;
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  margin: 1.25rem 0;
+}
+
+.article-content .script-label {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #014189;
+  margin-bottom: 0.5rem !important;
+}
+
+.article-content .script-box p:last-child {
+  margin-bottom: 0;
+  font-style: italic;
+  color: #002A5A;
+  font-weight: 500;
+}
+
+/* Tip box */
+.article-content .tip-box {
+  background: #f0fce4;
+  border-left: 4px solid #8CED1E;
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  margin: 1.25rem 0;
+}
+
+.article-content .tip-label {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #3a6b00;
+  margin-bottom: 0.5rem !important;
+}
+
+.article-content .tip-box p:last-child {
+  margin-bottom: 0;
+  color: #1a3d00;
+}
+
+/* Warning box */
+.article-content .warning-box {
+  background: #fff5f0;
+  border-left: 4px solid #f97316;
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  margin: 1.25rem 0;
+}
+
+.article-content .warning-label {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #c2410c;
+  margin-bottom: 0.5rem !important;
+}
+
+.article-content .warning-box p:last-child {
+  margin-bottom: 0;
+  color: #7c2d12;
+}
+
+/* Table */
+.article-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.25rem 0;
+  font-size: 14px;
+}
+
+.article-content th,
+.article-content td {
+  padding: 0.65rem 0.9rem;
+  text-align: left;
+  border: 1px solid #E2EDFE;
+}
+
+.article-content th {
+  background: #F7FAFD;
+  font-weight: 700;
+  color: #0A1628;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.article-content tr:nth-child(even) td {
+  background: #F7FAFD;
+}
+
+.article-content td:first-child {
+  font-weight: 600;
+  color: #374151;
+}

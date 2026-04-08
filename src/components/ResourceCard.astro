@@ -1,0 +1,43 @@
+---
+interface Props {
+  slug: string
+  categorySlug: string
+  title: string
+  categoryColor?: string
+  categoryBg?: string
+}
+
+const {
+  slug,
+  categorySlug,
+  title,
+  categoryColor = '#014189',
+  categoryBg = '#E2EDFE',
+} = Astro.props
+---
+
+<a
+  href={`/browse/${categorySlug}/${slug}`}
+  class="res-card group flex flex-col gap-3 p-5 rounded-2xl bg-white transition-all duration-200 no-underline border border-[#E2EDFE] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+  style={`--cat-color: ${categoryColor}; --cat-bg: ${categoryBg};`}
+  aria-label={title}
+>
+  <h3 class="res-title text-[15px] font-bold text-[#0A1628] leading-snug line-clamp-2 transition-colors duration-150 m-0">
+    {title}
+  </h3>
+</a>
+
+<style>
+.res-card:hover {
+  border-color: var(--cat-color);
+  box-shadow: 0 4px 12px -2px rgb(0 0 0 / 0.1);
+}
+
+.res-card:focus-visible {
+  outline-color: var(--cat-color);
+}
+
+.res-card:hover .res-title {
+  color: var(--cat-color);
+}
+</style>

@@ -1,0 +1,55 @@
+---
+interface Props {
+  slug: string
+  name: string
+  icon: string
+  gradient: string
+  articleCount?: number
+  showCount?: boolean
+}
+
+const { slug, name, icon, gradient, articleCount, showCount = false } = Astro.props
+---
+
+<a
+  href={`/browse/${slug}`}
+  class="cat-card group flex flex-col items-center gap-4 p-6 rounded-2xl no-underline cursor-pointer"
+  style={`background: ${gradient}`}
+  aria-label={`Browse ${name}`}
+>
+  <!-- Icon container -->
+  <div
+    class="w-14 h-14 rounded-2xl flex items-center justify-center"
+    style="background: rgba(255,255,255,0.2);"
+    aria-hidden="true"
+  >
+    <i class:list={[icon, 'text-2xl text-white']} aria-hidden="true"></i>
+  </div>
+
+  <!-- Label -->
+  <span class="text-[14px] font-bold text-white text-center leading-snug">
+    {name}
+  </span>
+
+  <!-- Article count (optional) -->
+  {showCount && articleCount !== undefined && (
+    <span class="text-[12px] font-semibold -mt-2" style="color: rgba(255,255,255,0.75);">
+      {articleCount} {articleCount === 1 ? 'article' : 'articles'}
+    </span>
+  )}
+</a>
+
+<style>
+.cat-card {
+  box-shadow: 0 4px 12px -2px rgb(0 0 0 / 0.15);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.cat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 32px -6px rgb(0 0 0 / 0.25);
+}
+.cat-card:focus-visible {
+  outline: 2px solid white;
+  outline-offset: 3px;
+}
+</style>

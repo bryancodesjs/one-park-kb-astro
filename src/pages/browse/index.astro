@@ -1,0 +1,156 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import CategoryCard from '../../components/CategoryCard.astro'
+import ResourceCard from '../../components/ResourceCard.astro'
+import SearchBar from '../../components/SearchBar.vue'
+import { getCollection } from 'astro:content'
+
+const stripMd = (id: string) => id.replace(/\.md$/, '')
+
+const allCategories = await getCollection('categories')
+const allArticles   = await getCollection('articles')
+
+const categories = allCategories.sort((a, b) => a.data.order - b.data.order)
+
+function articleCount(catSlug: string) {
+  return allArticles.filter(a => a.id.startsWith(catSlug + '/')).length
+}
+
+function articlesFor(catSlug: string, limit = 3) {
+  return allArticles
+    .filter(a => a.id.startsWith(catSlug + '/'))
+    .sort((a, b) => a.data.order - b.data.order)
+    .slice(0, limit)
+    .map(a => {
+      const [cs, articleFile] = a.id.split('/')
+      const cat = categories.find(c => stripMd(c.id) === cs)
+      return {
+        slug: stripMd(articleFile),
+        categorySlug: cs,
+        title: a.data.title,
+        categoryColor: cat?.data.color,
+        categoryBg: cat?.data.bgColor,
+      }
+    })
+}
+
+const searchQuery = Astro.url.searchParams.get('q') ?? ''
+
+const searchResults = searchQuery.length >= 2
+  ? allArticles
+      .filter(a =>
+        a.data.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        a.data.summary.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        a.data.tags.some(t => t.toLowerCase().includes(searchQuery.toLowerCase()))
+      )
+      .map(a => {
+        const [cs, articleFile] = a.id.split('/')
+        const cat = categories.find(c => stripMd(c.id) === cs)
+        return {
+          slug: stripMd(articleFile),
+          categorySlug: cs,
+          title: a.data.title,
+          categoryColor: cat?.data.color,
+          categoryBg: cat?.data.bgColor,
+        }
+      })
+  : []
+
+const searchArticles = allArticles.map(a => {
+  const [cs, articleFile] = a.id.split('/')
+  return { slug: stripMd(articleFile), categorySlug: cs, title: a.data.title, summary: a.data.summary, tags: a.data.tags }
+})
+const searchCategories = categories.map(c => ({ slug: stripMd(c.id), name: c.data.name, icon: c.data.icon }))
+---
+
+<BaseLayout title="Browse — One Park Knowledge Base">
+  <div class="max-w-5xl mx-auto px-6 py-10">
+
+    <div class="mb-8">
+      <h1 class="text-[28px] md:text-[32px] font-extrabold text-[#0A1628] tracking-tight mb-1">
+        Knowledge Browser
+      </h1>
+      <p class="text-[15px] text-[#6B7280] font-medium">
+        Browse all categories or search for what you need.
+      </p>
+    </div>
+
+    <div class="mb-10">
+      <SearchBar
+        client:load
+        articles={searchArticles}
+        categories={searchCategories}
+        placeholder="Search across all resources…"
+        input-id="browse-search"
+        dropdown-id="browse-search-dropdown"
+        search-page-base="/browse"
+      />
+    </div>
+
+    {searchQuery.length >= 2 ? (
+      <div>
+        <div class="mb-4 flex items-center gap-2">
+          <h2 class="text-[16px] font-bold text-[#0A1628] m-0">
+            Results for "<span class="text-[#014189]">{searchQuery}</span>"
+          </h2>
+          <span class="text-[13px] text-[#9CA3AF]">({searchResults.length})</span>
+          <a href="/browse" class="ml-auto text-[13px] font-semibold text-[#6B7280] hover:text-[#014189] flex items-center gap-1 no-underline rounded">
+            <i class="ri-close-line" aria-hidden="true"></i>
+            Clear
+          </a>
+        </div>
+        {searchResults.length > 0 ? (
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-12">
+            {searchResults.map(article => (
+              <ResourceCard slug={article.slug} categorySlug={article.categorySlug} title={article.title} categoryColor={article.categoryColor} categoryBg={article.categoryBg} />
+            ))}
+          </div>
+        ) : (
+          <div class="text-[15px] text-[#6B7280] py-8 text-center">No results found. Try a different keyword.</div>
+        )}
+      </div>
+    ) : (
+      <div>
+        <section aria-labelledby="categories-heading" class="mb-12">
+          <h2 id="categories-heading" class="text-[17px] font-bold text-[#0A1628] mb-5">All categories</h2>
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+            {categories.map(cat => (
+              <CategoryCard
+                slug={stripMd(cat.id)}
+                name={cat.data.name}
+                icon={cat.data.icon}
+                gradient={cat.data.gradient}
+                showCount={true}
+                articleCount={articleCount(stripMd(cat.id))}
+              />
+            ))}
+          </div>
+        </section>
+
+        {categories.map(cat => {
+          const catSlug = stripMd(cat.id)
+          return (
+            <section aria-labelledby={`cat-${catSlug}`} class="mb-12">
+              <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-8 h-8 rounded-lg bg-[#E2EDFE] flex items-center justify-center shrink-0" aria-hidden="true">
+                    <i class:list={[cat.data.icon, 'text-[#014189] text-sm']} aria-hidden="true"></i>
+                  </div>
+                  <h2 id={`cat-${catSlug}`} class="text-[16px] font-bold text-[#0A1628] m-0">{cat.data.name}</h2>
+                </div>
+                <a href={`/browse/${catSlug}`} class="text-[13px] font-semibold text-[#014189] hover:text-[#002A5A] no-underline flex items-center gap-1 transition-colors rounded">
+                  See all <i class="ri-arrow-right-s-line" aria-hidden="true"></i>
+                </a>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {articlesFor(catSlug, 3).map(article => (
+                  <ResourceCard slug={article.slug} categorySlug={article.categorySlug} title={article.title} categoryColor={article.categoryColor} categoryBg={article.categoryBg} />
+                ))}
+              </div>
+            </section>
+          )
+        })}
+      </div>
+    )}
+  </div>
+</BaseLayout>
