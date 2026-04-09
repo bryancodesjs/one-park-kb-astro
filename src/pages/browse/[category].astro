@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro'
-import CategorySearch from '../../components/CategorySearch.vue'
+import CategorySearch from '../../components/CategorySearch.astro'
 import { getCollection } from 'astro:content'
 
 const stripMd = (id: string) => id.replace(/\.md$/, '')
@@ -69,11 +69,10 @@ const catArticles = allArticles
 
     <!-- Search + article grid (Vue island) -->
     <CategorySearch
-      client:load
       articles={catArticles}
       categoryColor={cat.data.color}
       placeholder={`Search within ${cat.data.name}…`}
-      input-id="cat-search"
+      inputId="cat-search"
     />
 
   </div>

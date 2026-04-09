@@ -2,7 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro'
 import CategoryCard from '../../components/CategoryCard.astro'
 import ResourceCard from '../../components/ResourceCard.astro'
-import SearchBar from '../../components/SearchBar.vue'
+import SearchBar from '../../components/SearchBar.astro'
 import { getCollection } from 'astro:content'
 
 const stripMd = (id: string) => id.replace(/\.md$/, '')
@@ -77,13 +77,12 @@ const searchCategories = categories.map(c => ({ slug: stripMd(c.id), name: c.dat
 
     <div class="mb-10">
       <SearchBar
-        client:load
         articles={searchArticles}
         categories={searchCategories}
         placeholder="Search across all resources…"
-        input-id="browse-search"
-        dropdown-id="browse-search-dropdown"
-        search-page-base="/browse"
+        inputId="browse-search"
+        dropdownId="browse-search-dropdown"
+        searchPageBase="/browse"
       />
     </div>
 
