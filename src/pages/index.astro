@@ -118,55 +118,14 @@ const todayDate = 9
           </div>
         </div>
 
-        <!-- Featured Categories (compact) -->
-        <div class="bg-white rounded-2xl p-5 shadow-[0_1px_4px_rgb(0_0_0/0.07)]">
-          <div class="flex items-center justify-between mb-3">
-            <h2 class="text-[14px] font-bold text-[#012d53] m-0">Browse</h2>
-            <a href="/browse" class="text-[12px] font-semibold text-[#41be5e] hover:text-[#2fa14c] no-underline transition-colors">
-              View all
-            </a>
-          </div>
-          <div class="flex flex-col gap-2">
-            {featuredCategories.map(cat => (
-              <a
-                href={`/browse/${stripMd(cat.id)}`}
-                class="feed-article group flex gap-4 p-4 rounded-xl border border-[#dce8f2] bg-[#f4f7fa] hover:bg-white hover:border-transparent hover:shadow-[0_4px_16px_-4px_rgb(0_0_0/0.12)] transition-all no-underline"
-                style={`--cat-color: ${cat.data.color}`}
-                aria-label={`Browse ${cat.data.name}`}
-              >
-                <div
-                  class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
-                  style={`background: ${cat.data.bgColor ?? '#dce8f2'}`}
-                  aria-hidden="true"
-                >
-                  <i class:list={[cat.data.icon, 'text-sm']} style={`color: ${cat.data.color}`} aria-hidden="true"></i>
-                </div>
-                <div class="flex-1 min-w-0">
-                  <p class="cat-mini-title text-[14px] font-semibold text-[#0A1628] leading-snug m-0 transition-colors">
-                    {cat.data.name}
-                  </p>
-                  <p class="text-[12px] text-[#9CA3AF] mt-0.5 m-0">
-                    {articleCount(stripMd(cat.id))} articles
-                  </p>
-                </div>
-                <i
-                  class="ri-arrow-right-up-line text-sm ml-auto shrink-0 mt-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                  style={`color: ${cat.data.color}`}
-                  aria-hidden="true"
-                ></i>
-              </a>
-            ))}
-          </div>
-        </div>
-
         <!-- Quick Access -->
         <div class="bg-white rounded-2xl overflow-hidden shadow-[0_1px_4px_rgb(0_0_0/0.07)]">
           <div class="flex items-center justify-between px-5 pt-5 pb-3">
             <h2 class="text-[14px] font-bold text-[#012d53] m-0 flex items-center gap-1.5">
-              <i class="ri-flashlight-line text-[#41be5e]" aria-hidden="true"></i>
+              <i class="ri-flashlight-line text-blue-500" aria-hidden="true"></i>
               Quick Access
             </h2>
-            <a href="/browse" class="text-[12px] font-semibold text-[#41be5e] hover:text-[#2fa14c] no-underline transition-colors">
+            <a href="/browse" class="text-[12px] font-semibold text-blue-500 hover:text-blue-600 hover:underline no-underline transition-colors">
               All
             </a>
           </div>
@@ -199,6 +158,49 @@ const todayDate = 9
           </div>
         </div>
 
+        <!-- Featured Categories (compact) -->
+        <div class="bg-white rounded-2xl shadow-[0_1px_4px_rgb(0_0_0/0.07)] overflow-hidden">
+          <div class="flex items-center justify-between  p-5">
+            <h2 class="text-[14px] font-bold text-[#012d53] m-0">Browse</h2>
+            <a href="/browse" class="text-[12px] font-semibold text-blue-500 hover:text-blue-600 hover:underline no-underline transition-colors">
+              View all
+            </a>
+          </div>
+          <div class="flex flex-col">
+            {featuredCategories.map(cat => (
+              <a
+                href={`/browse/${stripMd(cat.id)}`}
+                class="feed-article group flex gap-4 p-4  border-b border-[#dce8f2] hover:bg-[#f4f7fa] bg-white  transition-all no-underline"
+                style={`--cat-color: ${cat.data.color}`}
+                aria-label={`Browse ${cat.data.name}`}
+              >
+                <div
+                  class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
+                  style={`background: ${cat.data.bgColor ?? '#dce8f2'}`}
+                  aria-hidden="true"
+                >
+                  <i class:list={[cat.data.icon, 'text-sm']} style={`color: ${cat.data.color}`} aria-hidden="true"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="cat-mini-title text-[14px] font-semibold text-[#0A1628] leading-snug m-0 transition-colors">
+                    {cat.data.name}
+                  </p>
+                  <p class="text-[12px] text-[#9CA3AF] mt-0.5 m-0">
+                    {articleCount(stripMd(cat.id))} articles
+                  </p>
+                </div>
+                <i
+                  class="ri-arrow-right-up-line text-sm ml-auto shrink-0 mt-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                  style={`color: ${cat.data.color}`}
+                  aria-hidden="true"
+                ></i>
+              </a>
+            ))}
+          </div>
+        </div>
+
+        
+
       </aside>
 
 
@@ -208,21 +210,21 @@ const todayDate = 9
       <main class="col-span-1 lg:col-span-2 flex flex-col gap-5 min-w-0">
 
         <!-- Latest Articles -->
-        <section class="bg-white rounded-2xl p-5 shadow-[0_1px_4px_rgb(0_0_0/0.07)]">
-          <div class="flex items-center justify-between mb-4">
+        <section class="bg-white rounded-2xl  shadow-[0_1px_4px_rgb(0_0_0/0.07)] overflow-hidden">
+          <div class="flex items-center justify-between p-5">
             <h2 class="text-[15px] font-bold text-[#012d53] m-0 flex items-center gap-2">
-              <i class="ri-article-line text-[#41be5e]" aria-hidden="true"></i>
-              Latest Articles
-            </h2>
-            <a href="/browse" class="text-[12px] font-semibold text-[#41be5e] hover:text-[#2fa14c] no-underline transition-colors flex items-center gap-1">
+            <i class="ri-sparkling-line text-blue-500" aria-hidden="true"></i>
+            What's New
+          </h2>
+            <a href="/browse" class="text-[12px] font-semibold text-blue-500 hover:text-blue-600 hover:underline no-underline transition-colors flex items-center gap-1">
               View all <i class="ri-arrow-right-s-line" aria-hidden="true"></i>
             </a>
           </div>
-          <div class="flex flex-col gap-3">
+          <div class="flex flex-col">
             {feedArticles.map(article => (
               <a
                 href={`/browse/${article.categorySlug}/${article.slug}`}
-                class="feed-article group flex gap-4 p-4 rounded-xl border border-[#dce8f2] bg-[#f4f7fa] hover:bg-white hover:border-transparent hover:shadow-[0_4px_16px_-4px_rgb(0_0_0/0.12)] transition-all no-underline"
+                class="feed-article group flex gap-4 p-4  border-b border-[#dce8f2] hover:bg-[#f4f7fa] bg-white hover:border-transparent hover:shadow-[0_4px_16px_-4px_rgb(0_0_0/0.12)] transition-all no-underline"
               >
                 <div
                   class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 mt-0.5"
@@ -261,19 +263,19 @@ const todayDate = 9
         </section>
 
         <!-- Team Announcements -->
-        <section class="bg-white rounded-2xl p-5 shadow-[0_1px_4px_rgb(0_0_0/0.07)]">
-          <div class="flex items-center justify-between mb-4">
+        <section class="bg-white rounded-2xl  shadow-[0_1px_4px_rgb(0_0_0/0.07)] overflow-hidden">
+          <div class="flex items-center justify-between p-5">
             <h2 class="text-[15px] font-bold text-[#012d53] m-0 flex items-center gap-2">
-              <i class="ri-megaphone-line text-[#41be5e]" aria-hidden="true"></i>
+              <i class="ri-megaphone-line text-blue-500" aria-hidden="true"></i>
               Team Announcements
             </h2>
             <span class="text-[11px] font-bold text-white bg-[#41be5e] px-2.5 py-0.5 rounded-full">2 new</span>
           </div>
 
-          <div class="flex flex-col gap-3">
+          <div class="flex flex-col ">
 
             <!-- Post 1 -->
-            <div class="p-4 rounded-xl bg-[#f4f7fa] border border-[#dce8f2]">
+            <div class="p-4  hover:bg-[#f4f7fa] border-b border-[#dce8f2]">
               <div class="flex items-start gap-3">
                 <div
                   class="w-9 h-9 rounded-full flex items-center justify-center shrink-0 text-white text-[12px] font-bold"
@@ -303,7 +305,7 @@ const todayDate = 9
             </div>
 
             <!-- Post 2 -->
-            <div class="p-4 rounded-xl bg-[#f4f7fa] border border-[#dce8f2]">
+            <div class="p-4  hover:bg-[#f4f7fa] border-b border-[#dce8f2]">
               <div class="flex items-start gap-3">
                 <div
                   class="w-9 h-9 rounded-full flex items-center justify-center shrink-0 text-white text-[12px] font-bold"
@@ -333,7 +335,7 @@ const todayDate = 9
             </div>
 
             <!-- Post 3 -->
-            <div class="p-4 rounded-xl bg-[#f4f7fa] border border-[#dce8f2]">
+            <div class="p-4  hover:bg-[#f4f7fa] border-b border-[#dce8f2]">
               <div class="flex items-start gap-3">
                 <div
                   class="w-9 h-9 rounded-full flex items-center justify-center shrink-0 text-white text-[12px] font-bold"
@@ -365,9 +367,9 @@ const todayDate = 9
         </section>
 
         <!-- What's New -->
-        <section class="bg-white rounded-2xl p-5 shadow-[0_1px_4px_rgb(0_0_0/0.07)]">
+        <section class="hidden bg-white rounded-2xl p-5 shadow-[0_1px_4px_rgb(0_0_0/0.07)]">
           <h2 class="text-[15px] font-bold text-[#012d53] m-0 mb-4 flex items-center gap-2">
-            <i class="ri-sparkling-line text-[#41be5e]" aria-hidden="true"></i>
+            <i class="ri-sparkling-line text-blue-500" aria-hidden="true"></i>
             What's New
           </h2>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -472,9 +474,9 @@ const todayDate = 9
             <i class="ri-time-line text-[#41be5e]" aria-hidden="true"></i>
             Today's Schedule
           </h2>
-          <div class="flex flex-col gap-2">
+          <div class="flex flex-col gap-3">
 
-            <div class="flex items-center gap-3 p-3 rounded-xl bg-[#f4f7fa]">
+            <div class="flex items-center gap-3 rounded-xl">
               <div class="w-1 h-10 rounded-full bg-[#41be5e] shrink-0" aria-hidden="true"></div>
               <div class="flex-1 min-w-0">
                 <p class="text-[11px] text-[#9CA3AF] m-0">10:00 AM</p>
@@ -483,7 +485,7 @@ const todayDate = 9
               <i class="ri-group-line text-[#9CA3AF] text-sm shrink-0" aria-hidden="true"></i>
             </div>
 
-            <div class="flex items-center gap-3 p-3 rounded-xl bg-[#f4f7fa]">
+            <div class="flex items-center gap-3 rounded-xl">
               <div class="w-1 h-10 rounded-full bg-[#1e5c9e] shrink-0" aria-hidden="true"></div>
               <div class="flex-1 min-w-0">
                 <p class="text-[11px] text-[#9CA3AF] m-0">2:00 PM</p>
@@ -492,7 +494,7 @@ const todayDate = 9
               <i class="ri-bar-chart-line text-[#9CA3AF] text-sm shrink-0" aria-hidden="true"></i>
             </div>
 
-            <div class="flex items-center gap-3 p-3 rounded-xl bg-[#f4f7fa]">
+            <div class="flex items-center gap-3 rounded-xl">
               <div class="w-1 h-10 rounded-full bg-[#0e6b8e] shrink-0" aria-hidden="true"></div>
               <div class="flex-1 min-w-0">
                 <p class="text-[11px] text-[#9CA3AF] m-0">4:30 PM</p>
