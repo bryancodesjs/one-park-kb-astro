@@ -1,5 +1,6 @@
 ---
 title: Trust Signals & Ratings
+dateCreated: '2026-03-03'
 summary: OPF's verified ratings and awards you can cite to build client confidence.
 tags: [trust, ratings, trustpilot, bbb, google, reviews, credentials]
 readTime: 1 min

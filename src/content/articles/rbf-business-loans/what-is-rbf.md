@@ -1,5 +1,6 @@
 ---
 title: What is Revenue-Based Financing (RBF)?
+dateCreated: '2026-02-18'
 summary: A plain-language explanation of how RBF works — for you and for your clients.
 tags: [rbf, revenue based financing, what is, product, definition]
 readTime: 3 min

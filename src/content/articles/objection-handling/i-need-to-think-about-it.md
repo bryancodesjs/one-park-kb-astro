@@ -1,5 +1,6 @@
 ---
 title: '"I need to think about it"'
+dateCreated: '2026-02-15'
 summary: How to keep the conversation alive when a prospect stalls and asks for more time.
 tags: [stall, delay, think, hesitation]
 readTime: 2 min

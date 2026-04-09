@@ -1,5 +1,6 @@
 ---
 title: Systems & Tools Overview
+dateCreated: '2026-02-10'
 summary: Every platform you'll use and what each one is for.
 tags: [systems, tools, software, ringcentral, salesforce, slack]
 readTime: 2 min

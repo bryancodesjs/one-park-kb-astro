@@ -1,5 +1,6 @@
 ---
 title: Presenting the Offer
+dateCreated: '2026-02-22'
 summary: How to walk a client through a funding offer clearly and confidently.
 tags: [offer, presenting, terms, factor rate, pitch]
 readTime: 3 min

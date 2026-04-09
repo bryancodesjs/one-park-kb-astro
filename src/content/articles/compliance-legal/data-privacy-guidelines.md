@@ -1,5 +1,6 @@
 ---
 title: Data Privacy Guidelines
+dateCreated: '2026-02-20'
 summary: How to handle client financial and personal information securely during calls.
 tags: [privacy, data, security, pii, glba, confidential]
 readTime: 2 min

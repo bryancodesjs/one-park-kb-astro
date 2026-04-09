@@ -1,5 +1,6 @@
 ---
 title: '"The rates are too high"'
+dateCreated: '2026-04-03'
 summary: Reframing factor rates vs. APR, and shifting focus to the cost of not having capital.
 tags: [rates, cost, expensive, interest, apr, factor rate]
 readTime: 3 min

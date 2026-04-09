@@ -1,5 +1,6 @@
 ---
 title: Funding Timeline — Start to Funded
+dateCreated: '2026-02-25'
 summary: The four steps from application to money in the bank, and how fast each one moves.
 tags: [timeline, how long, fast, 72 hours, process, speed]
 readTime: 2 min

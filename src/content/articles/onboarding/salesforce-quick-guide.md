@@ -1,5 +1,6 @@
 ---
 title: Salesforce Quick-Start Guide
+dateCreated: '2026-03-28'
 summary: The minimum Salesforce actions you need to take on every call.
 tags: [salesforce, crm, logging, lead, disposition, system]
 readTime: 3 min

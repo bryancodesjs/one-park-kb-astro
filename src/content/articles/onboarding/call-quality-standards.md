@@ -1,5 +1,6 @@
 ---
 title: Call Quality Standards
+dateCreated: '2026-02-12'
 summary: What quality evaluators look for and how calls are scored.
 tags: [quality, scorecard, evaluation, qa, metrics, standards]
 readTime: 2 min

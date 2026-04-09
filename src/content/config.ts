@@ -18,6 +18,7 @@ const articles = defineCollection({
   type: 'content',
   schema: z.object({
     title: z.string(),
+    dateCreated: z.string(),    // ISO date: '2026-04-08'
     summary: z.string(),
     tags: z.array(z.string()),
     readTime: z.string(),

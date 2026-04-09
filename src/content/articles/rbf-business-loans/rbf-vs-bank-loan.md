@@ -1,5 +1,6 @@
 ---
 title: RBF vs. Traditional Bank Loan
+dateCreated: '2026-03-18'
 summary: A side-by-side comparison to help clients understand why OPF is different.
 tags: [bank, comparison, traditional loan, difference, vs, sba]
 readTime: 2 min

@@ -1,6 +1,5 @@
 <template>
   <div class="relative w-full" ref="containerRef">
-
     <!-- Input row -->
     <div class="flex items-center gap-3">
       <div class="relative flex-1">
@@ -23,7 +22,7 @@
       </div>
       <button
         type="button"
-        class="h-[52px] px-6 rounded-full bg-[#012d53] text-white text-[14px] font-semibold flex items-center gap-2 hover:bg-[#011f3b] transition-colors shrink-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#012d53]"
+        class="h-[52px] px-6 rounded-full bg-[#47BB60] text-white text-[14px] font-semibold flex items-center gap-2 hover:bg-[#37954B] transition-colors shrink-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#012d53]"
         @click="onEnter"
         aria-label="Search"
       >
@@ -48,7 +47,10 @@
           role="option"
           aria-selected="false"
         >
-          No results for "<span class="font-semibold text-[#0A1628]">{{ query }}</span>"
+          No results for "<span class="font-semibold text-[#0A1628]">{{
+            query
+          }}</span
+          >"
         </div>
 
         <!-- Result items -->
@@ -59,7 +61,11 @@
             :href="`/browse/${article.categorySlug}/${article.slug}`"
             role="option"
             :aria-selected="focusedIndex === idx"
-            :ref="el => { if (el) resultRefs[idx] = el as HTMLElement }"
+            :ref="
+              (el) => {
+                if (el) resultRefs[idx] = el as HTMLElement;
+              }
+            "
             class="flex items-start gap-3 px-5 py-3.5 hover:bg-[#f4f7fa] transition-colors border-b border-[#dce8f2] last:border-b-0 no-underline group"
             :class="focusedIndex === idx ? 'bg-[#f4f7fa]' : ''"
             @click="closeDropdown"
@@ -68,12 +74,22 @@
             @keydown.escape="closeDropdown"
           >
             <!-- Category icon -->
-            <div class="w-8 h-8 rounded-lg bg-[#dce8f2] flex items-center justify-center shrink-0 mt-0.5">
-              <i :class="[getCategoryIcon(article.categorySlug), 'text-[#012d53] text-sm']" aria-hidden="true"></i>
+            <div
+              class="w-8 h-8 rounded-lg bg-[#dce8f2] flex items-center justify-center shrink-0 mt-0.5"
+            >
+              <i
+                :class="[
+                  getCategoryIcon(article.categorySlug),
+                  'text-[#012d53] text-sm',
+                ]"
+                aria-hidden="true"
+              ></i>
             </div>
             <!-- Text -->
             <div class="flex flex-col gap-0.5 min-w-0">
-              <span class="text-[14px] font-semibold text-[#0A1628] group-hover:text-[#012d53] transition-colors truncate">
+              <span
+                class="text-[14px] font-semibold text-[#0A1628] group-hover:text-[#012d53] transition-colors truncate"
+              >
                 {{ article.title }}
               </span>
               <span class="text-[12px] text-[#6B7280] truncate">
@@ -81,7 +97,10 @@
               </span>
             </div>
             <!-- Arrow -->
-            <i class="ri-arrow-right-up-line text-[#012d53] text-sm ml-auto shrink-0 mt-1 opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true"></i>
+            <i
+              class="ri-arrow-right-up-line text-[#012d53] text-sm ml-auto shrink-0 mt-1 opacity-0 group-hover:opacity-100 transition-opacity"
+              aria-hidden="true"
+            ></i>
           </a>
 
           <!-- See all results -->
@@ -100,112 +119,124 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, watch, onMounted, onBeforeUnmount } from "vue";
 
 interface Article {
-  slug: string
-  categorySlug: string
-  title: string
-  summary: string
-  tags: string[]
+  slug: string;
+  categorySlug: string;
+  title: string;
+  summary: string;
+  tags: string[];
 }
 
 interface Category {
-  slug: string
-  name: string
-  icon: string
+  slug: string;
+  name: string;
+  icon: string;
 }
 
 const props = defineProps<{
-  articles: Article[]
-  categories: Category[]
-  placeholder?: string
-  inputId?: string
-  dropdownId?: string
-  searchPageBase?: string
-}>()
+  articles: Article[];
+  categories: Category[];
+  placeholder?: string;
+  inputId?: string;
+  dropdownId?: string;
+  searchPageBase?: string;
+}>();
 
-const placeholder  = props.placeholder    ?? 'What do you want to know today?'
-const inputId      = props.inputId        ?? 'kb-search'
-const dropdownId   = props.dropdownId     ?? 'kb-search-dropdown'
-const searchPageBase = props.searchPageBase ?? '/browse'
+const placeholder = props.placeholder ?? "What do you want to know today?";
+const inputId = props.inputId ?? "kb-search";
+const dropdownId = props.dropdownId ?? "kb-search-dropdown";
+const searchPageBase = props.searchPageBase ?? "/browse";
 
-const query        = ref('')
-const focusedIndex = ref(-1)
-const containerRef = ref<HTMLElement | null>(null)
-const resultRefs   = ref<HTMLElement[]>([])
+const query = ref("");
+const focusedIndex = ref(-1);
+const containerRef = ref<HTMLElement | null>(null);
+const resultRefs = ref<HTMLElement[]>([]);
 
 const results = computed(() => {
-  const q = query.value.trim().toLowerCase()
-  if (q.length < 2) return []
+  const q = query.value.trim().toLowerCase();
+  if (q.length < 2) return [];
   return props.articles
-    .filter(a =>
-      a.title.toLowerCase().includes(q) ||
-      a.summary.toLowerCase().includes(q) ||
-      a.tags.some(t => t.toLowerCase().includes(q))
+    .filter(
+      (a) =>
+        a.title.toLowerCase().includes(q) ||
+        a.summary.toLowerCase().includes(q) ||
+        a.tags.some((t) => t.toLowerCase().includes(q)),
     )
-    .slice(0, 7)
-})
+    .slice(0, 7);
+});
 
-const showDropdown = computed(() => query.value.trim().length >= 2)
+const showDropdown = computed(() => query.value.trim().length >= 2);
 
 function getCategoryIcon(slug: string) {
-  return props.categories.find(c => c.slug === slug)?.icon || 'ri-file-text-line'
+  return (
+    props.categories.find((c) => c.slug === slug)?.icon || "ri-file-text-line"
+  );
 }
 
 function getCategoryName(slug: string) {
-  return props.categories.find(c => c.slug === slug)?.name || ''
+  return props.categories.find((c) => c.slug === slug)?.name || "";
 }
 
 function focusResult(idx: number) {
-  if (results.value.length === 0) return
-  focusedIndex.value = Math.max(0, Math.min(idx, results.value.length - 1))
-  resultRefs.value[focusedIndex.value]?.focus()
+  if (results.value.length === 0) return;
+  focusedIndex.value = Math.max(0, Math.min(idx, results.value.length - 1));
+  resultRefs.value[focusedIndex.value]?.focus();
 }
 
 function onEnter() {
   if (query.value.trim().length > 0) {
-    window.location.href = `${searchPageBase}?q=${encodeURIComponent(query.value.trim())}`
-    closeDropdown()
+    window.location.href = `${searchPageBase}?q=${encodeURIComponent(query.value.trim())}`;
+    closeDropdown();
   }
 }
 
 function goToSearch() {
-  window.location.href = `${searchPageBase}?q=${encodeURIComponent(query.value.trim())}`
-  closeDropdown()
+  window.location.href = `${searchPageBase}?q=${encodeURIComponent(query.value.trim())}`;
+  closeDropdown();
 }
 
 function closeDropdown() {
-  query.value = ''
-  focusedIndex.value = -1
+  query.value = "";
+  focusedIndex.value = -1;
 }
 
 function handleOutsideClick(e: MouseEvent) {
   if (containerRef.value && !containerRef.value.contains(e.target as Node)) {
-    closeDropdown()
+    closeDropdown();
   }
 }
 
-onMounted(()    => document.addEventListener('mousedown', handleOutsideClick))
-onBeforeUnmount(() => document.removeEventListener('mousedown', handleOutsideClick))
+onMounted(() => document.addEventListener("mousedown", handleOutsideClick));
+onBeforeUnmount(() =>
+  document.removeEventListener("mousedown", handleOutsideClick),
+);
 
 watch(results, () => {
-  focusedIndex.value = -1
-  resultRefs.value   = []
-})
+  focusedIndex.value = -1;
+  resultRefs.value = [];
+});
 </script>
 
 <style scoped>
-input[type="search"]::-webkit-search-cancel-button { display: none; }
-
-.dropdown-enter-active, .dropdown-leave-active {
-  transition: opacity 0.15s ease, transform 0.15s ease;
+input[type="search"]::-webkit-search-cancel-button {
+  display: none;
 }
-.dropdown-enter-from, .dropdown-leave-to {
+
+.dropdown-enter-active,
+.dropdown-leave-active {
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease;
+}
+.dropdown-enter-from,
+.dropdown-leave-to {
   opacity: 0;
   transform: translateY(-6px);
 }
-.dropdown-enter-to, .dropdown-leave-from {
+.dropdown-enter-to,
+.dropdown-leave-from {
   opacity: 1;
   transform: translateY(0);
 }

@@ -1,5 +1,6 @@
 ---
 title: Minimum Qualification Requirements
+dateCreated: '2026-03-10'
 summary: The three criteria every applicant must meet before we can move forward.
 tags: [requirements, qualify, fico, revenue, eligibility, minimum]
 readTime: 1 min

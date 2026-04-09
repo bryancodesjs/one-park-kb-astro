@@ -1,6 +1,5 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro'
-import CategoryCard from '../components/CategoryCard.astro'
 import SearchBar from '../components/SearchBar.vue'
 import { getCollection } from 'astro:content'
 
@@ -9,86 +8,93 @@ const stripMd = (id: string) => id.replace(/\.md$/, '')
 const allCategories = await getCollection('categories')
 const allArticles   = await getCollection('articles')
 
-// Sort categories by order
-const categories = allCategories.sort((a, b) => a.data.order - b.data.order)
+const categories        = allCategories.sort((a, b) => a.data.order - b.data.order)
+const featuredCategories = categories.filter(c => c.data.featured)
 
-// Featured = first 3
-const featuredCategories = categories.slice(0, 3)
-
-// Article count per category slug (catSlug = e.g. 'objection-handling')
 function articleCount(catSlug: string) {
   return allArticles.filter(a => a.id.startsWith(catSlug + '/')).length
 }
 
-// Quick access articles (by quickAccess flag)
 const quickAccessArticles = allArticles
   .filter(a => a.data.quickAccess)
   .slice(0, 5)
   .map(a => {
     const [catSlug, articleFile] = a.id.split('/')
-    const articleSlug = stripMd(articleFile)
     const cat = categories.find(c => stripMd(c.id) === catSlug)
     return {
-      slug: articleSlug,
-      categorySlug: catSlug,
-      title: a.data.title,
-      readTime: a.data.readTime,
-      categoryName: cat?.data.name ?? '',
-      categoryGradient: cat?.data.gradient ?? '',
-      categoryColor: cat?.data.color ?? '#012d53',
-      categoryIcon: cat?.data.icon ?? 'ri-file-text-line',
+      slug:              stripMd(articleFile),
+      categorySlug:      catSlug,
+      title:             a.data.title,
+      readTime:          a.data.readTime,
+      categoryName:      cat?.data.name      ?? '',
+      categoryGradient:  cat?.data.gradient  ?? '',
+      categoryColor:     cat?.data.color     ?? '#012d53',
+      categoryIcon:      cat?.data.icon      ?? 'ri-file-text-line',
     }
   })
 
-// Data for the SearchBar Vue island
+const feedArticles = [...allArticles]
+  .sort((a, b) => b.data.dateCreated.localeCompare(a.data.dateCreated))
+  .slice(0, 5)
+  .map(a => {
+    const [catSlug, articleFile] = a.id.split('/')
+    const cat = categories.find(c => stripMd(c.id) === catSlug)
+    return {
+      slug:          stripMd(articleFile),
+      categorySlug:  catSlug,
+      title:         a.data.title,
+      summary:       a.data.summary,
+      readTime:      a.data.readTime,
+      dateCreated:   a.data.dateCreated,
+      categoryName:  cat?.data.name    ?? '',
+      categoryColor: cat?.data.color   ?? '#012d53',
+      categoryBg:    cat?.data.bgColor ?? '#dce8f2',
+      categoryIcon:  cat?.data.icon    ?? 'ri-file-text-line',
+    }
+  })
+
 const searchArticles = allArticles.map(a => {
   const [catSlug, articleFile] = a.id.split('/')
-  return {
-    slug: stripMd(articleFile),
-    categorySlug: catSlug,
-    title: a.data.title,
-    summary: a.data.summary,
-    tags: a.data.tags,
-  }
+  return { slug: stripMd(articleFile), categorySlug: catSlug, title: a.data.title, summary: a.data.summary, tags: a.data.tags }
 })
 
 const searchCategories = categories.map(c => ({
-  slug: stripMd(c.id),
-  name: c.data.name,
-  icon: c.data.icon,
+  slug: stripMd(c.id), name: c.data.name, icon: c.data.icon,
 }))
 
-const recentSearches = [
-  'Current RBF loan rates',
-  'Handling spouse talk objection',
-  'Minimum FICO requirements',
+const recentSearches = ['RBF rates', 'Spouse objection', 'FICO minimum']
+
+// April 2026 calendar — April 1 = Wednesday (Sun=0 → offset 3)
+const calDays: (number | null)[] = [
+  ...Array<null>(3).fill(null),
+  ...Array.from({ length: 30 }, (_, i) => i + 1),
 ]
+while (calDays.length % 7 !== 0) calDays.push(null)
+const calWeeks: (number | null)[][] = []
+for (let i = 0; i < calDays.length; i += 7) {
+  calWeeks.push(calDays.slice(i, i + 7))
+}
+const todayDate = 9
 ---
 
-<BaseLayout title="Home — One Park Knowledge Base">
-  <div class="min-h-[calc(100vh-64px)] flex flex-col items-center pb-16">
+<BaseLayout title="Home — McKenzie Capital Knowledge Base">
+  <div class="max-w-[1440px] mx-auto px-6 py-6">
+    <div class="grid grid-cols-1 lg:grid-cols-[300px_1fr_268px] gap-5 items-start">
 
-    <!-- ── Hero — light blue gradient band ──────────────────────────────────── -->
-    <div
-      class="w-full flex flex-col items-center px-6 relative overflow-hidden"
-      style="background: linear-gradient(180deg, #dce8f2 0%, #ecf2f7 60%, #f4f7fa 100%);"
-    >
-      <img class="absolute left-[-200px] top-[40px] opacity-80" width="460" src="/hero-decor-1.png" alt="" aria-hidden="true" />
-      <img class="absolute right-[-20px] bottom-[-20px] opacity-50" width="180" src="/hero-decor-2.png" alt="" aria-hidden="true" />
 
-      <div class="flex flex-col py-14">
-        <!-- Heading -->
-        <div class="text-center mb-8">
-          <h1 class="text-[23.04px] md:text-[27.65px] font-extrabold text-[#012d53] tracking-tight leading-tight">
-            Welcome back, Christina
-          </h1>
-          <p class="text-[15px] text-[#2a5c8a] mt-2 font-medium">
-            Find quick answers to keep your call moving.
-          </p>
-        </div>
+      <!-- ══════════════════════════════════════════════════════
+           LEFT — Search · Browse · Quick Access
+      ══════════════════════════════════════════════════════ -->
+      <aside class="flex flex-col gap-4 lg:sticky lg:top-[80px]">
 
-        <!-- Search bar (Vue island) -->
-        <div class="w-full max-w-[640px]">
+        <!-- Welcome + Search -->
+        <div class="bg-white rounded-2xl p-5 shadow-[0_1px_4px_rgb(0_0_0/0.07)]">
+          <div class="mb-4">
+            <h1 class="text-[18px] font-extrabold text-[#012d53] tracking-tight leading-tight">
+              Welcome back, Christina
+            </h1>
+            <p class="text-[12px] text-[#9CA3AF] mt-1 m-0">Wednesday, April 9 · 3 events today</p>
+          </div>
           <SearchBar
             client:load
             articles={searchArticles}
@@ -96,17 +102,15 @@ const recentSearches = [
             input-id="home-search"
             dropdown-id="home-search-dropdown"
           />
-
-          <!-- Recent searches -->
-          <div class="mt-4" aria-label="Recent searches">
-            <p class="text-[12px] font-semibold text-[#2a5c8a] uppercase tracking-widest mb-2.5">
-              Recent searches
+          <div class="mt-3" aria-label="Recent searches">
+            <p class="text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-widest mb-2 m-0">
+              Recent
             </p>
-            <div class="flex flex-wrap gap-2">
+            <div class="flex flex-wrap gap-1.5">
               {recentSearches.map(search => (
                 <a
                   href={`/browse?q=${encodeURIComponent(search)}`}
-                  class="text-[13px] font-medium text-[#012d53] border border-[#b5cfe6] bg-white/80 px-3.5 py-1.5 rounded-full hover:bg-white hover:border-[#012d53] transition-colors max-w-[200px] truncate focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#012d53] focus-visible:outline-offset-2 no-underline"
+                  class="text-[12px] font-medium text-[#012d53] border border-[#b5cfe6] bg-[#f4f7fa] px-3 py-1 rounded-full hover:bg-white hover:border-[#012d53] transition-colors no-underline"
                 >
                   {search}
                 </a>
@@ -114,91 +118,480 @@ const recentSearches = [
             </div>
           </div>
         </div>
-      </div>
-    </div>
 
-    <!-- ── Browse categories + Quick access ─────────────────────────────────── -->
-    <div class="w-full bg-white px-6 py-10 flex flex-col gap-10">
-
-      <!-- Browse categories -->
-      <section class="w-full mx-auto max-w-[640px]">
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-[18px] font-bold text-[#0A1628] m-0">Browse categories</h2>
-          <a
-            href="/browse"
-            class="text-[13px] font-semibold text-[#012d53] hover:text-[#41be5e] transition-colors no-underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#012d53] focus-visible:outline-offset-2 rounded"
-          >
-            View all
-          </a>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          {featuredCategories.map(cat => (
-            <CategoryCard
-              slug={stripMd(cat.id)}
-              name={cat.data.name}
-              icon={cat.data.icon}
-              gradient={cat.data.gradient}
-              showCount={true}
-              articleCount={articleCount(stripMd(cat.id))}
-            />
-          ))}
-        </div>
-      </section>
-
-      <!-- Quick access -->
-      <section class="w-full mx-auto max-w-[640px]">
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-[18px] font-bold text-[#0A1628] m-0 flex items-center gap-2">
-            <i class="ri-flashlight-line text-[#41be5e]" aria-hidden="true"></i>
-            Quick access
-          </h2>
-          <a
-            href="/browse"
-            class="text-[13px] font-semibold text-[#012d53] hover:text-[#41be5e] transition-colors no-underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#012d53] focus-visible:outline-offset-2 rounded"
-          >
-            All resources
-          </a>
-        </div>
-
-        <div class="flex flex-col divide-y divide-[#dce8f2] border border-[#dce8f2] rounded-2xl overflow-hidden bg-white">
-          {quickAccessArticles.map(article => (
-            <a
-              href={`/browse/${article.categorySlug}/${article.slug}`}
-              class="qa-row flex items-center gap-4 px-5 py-4 hover:bg-[#f4f7fa] transition-colors group no-underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
-              style={`--cat-color: ${article.categoryColor}`}
-            >
-              <div
-                class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
-                style={`background: ${article.categoryGradient}`}
-                aria-hidden="true"
-              >
-                <i class:list={[article.categoryIcon, 'text-sm text-white']} aria-hidden="true"></i>
-              </div>
-              <div class="flex flex-col min-w-0">
-                <span class="qa-title text-[14px] font-semibold text-[#0A1628] transition-colors truncate">
-                  {article.title}
-                </span>
-                <span class="text-[12px] text-[#9CA3AF]">
-                  {article.categoryName} · {article.readTime}
-                </span>
-              </div>
-              <i
-                class="qa-arrow ri-arrow-right-line ml-auto shrink-0 group-hover:translate-x-1 transition-transform text-sm"
-                aria-hidden="true"
-              ></i>
+        <!-- Featured Categories (compact) -->
+        <div class="bg-white rounded-2xl p-5 shadow-[0_1px_4px_rgb(0_0_0/0.07)]">
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="text-[14px] font-bold text-[#012d53] m-0">Browse</h2>
+            <a href="/browse" class="text-[12px] font-semibold text-[#41be5e] hover:text-[#2fa14c] no-underline transition-colors">
+              View all
             </a>
-          ))}
+          </div>
+          <div class="grid grid-cols-3 gap-2">
+            {featuredCategories.map(cat => (
+              <a
+                href={`/browse/${stripMd(cat.id)}`}
+                class="cat-mini group flex flex-col items-center gap-2 py-3 px-2 rounded-xl no-underline"
+                style={`background: ${cat.data.gradient}`}
+                aria-label={`Browse ${cat.data.name}`}
+              >
+                <div
+                  class="w-9 h-9 rounded-xl flex items-center justify-center"
+                  style="background: rgba(255,255,255,0.2);"
+                >
+                  <i class:list={[cat.data.icon, 'text-base text-white']} aria-hidden="true"></i>
+                </div>
+                <span class="text-[11px] font-bold text-white text-center leading-tight">
+                  {cat.data.name}
+                </span>
+                <span class="text-[10px] font-medium" style="color: rgba(255,255,255,0.7);">
+                  {articleCount(stripMd(cat.id))} articles
+                </span>
+              </a>
+            ))}
+          </div>
         </div>
-      </section>
+
+        <!-- Quick Access -->
+        <div class="bg-white rounded-2xl overflow-hidden shadow-[0_1px_4px_rgb(0_0_0/0.07)]">
+          <div class="flex items-center justify-between px-5 pt-5 pb-3">
+            <h2 class="text-[14px] font-bold text-[#012d53] m-0 flex items-center gap-1.5">
+              <i class="ri-flashlight-line text-[#41be5e]" aria-hidden="true"></i>
+              Quick Access
+            </h2>
+            <a href="/browse" class="text-[12px] font-semibold text-[#41be5e] hover:text-[#2fa14c] no-underline transition-colors">
+              All
+            </a>
+          </div>
+          <div class="flex flex-col divide-y divide-[#dce8f2]">
+            {quickAccessArticles.map(article => (
+              <a
+                href={`/browse/${article.categorySlug}/${article.slug}`}
+                class="qa-row flex items-center gap-3 px-5 py-3 hover:bg-[#f4f7fa] transition-colors group no-underline"
+                style={`--cat-color: ${article.categoryColor}`}
+              >
+                <div
+                  class="w-7 h-7 rounded-lg flex items-center justify-center shrink-0"
+                  style={`background: ${article.categoryGradient}`}
+                  aria-hidden="true"
+                >
+                  <i class:list={[article.categoryIcon, 'text-xs text-white']} aria-hidden="true"></i>
+                </div>
+                <div class="flex flex-col min-w-0">
+                  <span class="qa-title text-[13px] font-semibold text-[#0A1628] transition-colors truncate">
+                    {article.title}
+                  </span>
+                  <span class="text-[11px] text-[#9CA3AF]">{article.readTime}</span>
+                </div>
+                <i
+                  class="qa-arrow ri-arrow-right-line ml-auto shrink-0 group-hover:translate-x-1 transition-transform text-xs"
+                  aria-hidden="true"
+                ></i>
+              </a>
+            ))}
+          </div>
+        </div>
+
+      </aside>
+
+
+      <!-- ══════════════════════════════════════════════════════
+           CENTER — Feed
+      ══════════════════════════════════════════════════════ -->
+      <main class="flex flex-col gap-5 min-w-0">
+
+        <!-- Latest Articles -->
+        <section class="bg-white rounded-2xl p-5 shadow-[0_1px_4px_rgb(0_0_0/0.07)]">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-[15px] font-bold text-[#012d53] m-0 flex items-center gap-2">
+              <i class="ri-article-line text-[#41be5e]" aria-hidden="true"></i>
+              Latest Articles
+            </h2>
+            <a href="/browse" class="text-[12px] font-semibold text-[#41be5e] hover:text-[#2fa14c] no-underline transition-colors flex items-center gap-1">
+              View all <i class="ri-arrow-right-s-line" aria-hidden="true"></i>
+            </a>
+          </div>
+          <div class="flex flex-col gap-3">
+            {feedArticles.map(article => (
+              <a
+                href={`/browse/${article.categorySlug}/${article.slug}`}
+                class="feed-article group flex gap-4 p-4 rounded-xl border border-[#dce8f2] bg-[#f4f7fa] hover:bg-white hover:border-transparent hover:shadow-[0_4px_16px_-4px_rgb(0_0_0/0.12)] transition-all no-underline"
+              >
+                <div
+                  class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 mt-0.5"
+                  style={`background: ${article.categoryBg}`}
+                  aria-hidden="true"
+                >
+                  <i class:list={[article.categoryIcon, 'text-sm']} style={`color: ${article.categoryColor}`} aria-hidden="true"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-1">
+                    <span class="text-[11px] font-bold uppercase tracking-wider" style={`color: ${article.categoryColor}`}>
+                      {article.categoryName}
+                    </span>
+                    <span class="text-[#dce8f2]" aria-hidden="true">·</span>
+                    <span class="text-[11px] text-[#9CA3AF]">{article.readTime}</span>
+                    <span class="text-[#dce8f2]" aria-hidden="true">·</span>
+                    <span class="text-[11px] text-[#9CA3AF]">
+                      {new Date(article.dateCreated).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                    </span>
+                  </div>
+                  <h3 class="feed-title text-[14px] font-semibold text-[#0A1628] leading-snug m-0 line-clamp-1 transition-colors">
+                    {article.title}
+                  </h3>
+                  <p class="text-[12px] text-[#6B7280] mt-1 m-0 line-clamp-2 leading-relaxed">
+                    {article.summary}
+                  </p>
+                </div>
+                <i
+                  class="ri-arrow-right-up-line text-sm ml-auto shrink-0 mt-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                  style={`color: ${article.categoryColor}`}
+                  aria-hidden="true"
+                ></i>
+              </a>
+            ))}
+          </div>
+        </section>
+
+        <!-- Team Announcements -->
+        <section class="bg-white rounded-2xl p-5 shadow-[0_1px_4px_rgb(0_0_0/0.07)]">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-[15px] font-bold text-[#012d53] m-0 flex items-center gap-2">
+              <i class="ri-megaphone-line text-[#41be5e]" aria-hidden="true"></i>
+              Team Announcements
+            </h2>
+            <span class="text-[11px] font-bold text-white bg-[#41be5e] px-2.5 py-0.5 rounded-full">2 new</span>
+          </div>
+
+          <div class="flex flex-col gap-3">
+
+            <!-- Post 1 -->
+            <div class="p-4 rounded-xl bg-[#f4f7fa] border border-[#dce8f2]">
+              <div class="flex items-start gap-3">
+                <div
+                  class="w-9 h-9 rounded-full flex items-center justify-center shrink-0 text-white text-[12px] font-bold"
+                  style="background: linear-gradient(135deg, #012d53 0%, #1e5c9e 100%);"
+                  aria-hidden="true"
+                >SM</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-1 flex-wrap">
+                    <span class="text-[13px] font-bold text-[#012d53]">Sarah Mitchell</span>
+                    <span class="text-[11px] text-[#9CA3AF] font-medium">Team Lead</span>
+                    <span class="text-[#dce8f2]" aria-hidden="true">·</span>
+                    <span class="text-[11px] text-[#9CA3AF]">2h ago</span>
+                    <span class="ml-auto text-[10px] font-bold uppercase tracking-wider text-[#41be5e] bg-[#e6f7eb] px-2 py-0.5 rounded-full">New</span>
+                  </div>
+                  <p class="text-[13px] text-[#374151] leading-relaxed m-0">
+                    Q2 is off to a strong start — great work everyone. Updated objection scripts are now live in the KB. Make sure you're using the new rate-framing language on all inbound calls.
+                  </p>
+                  <a
+                    href="/browse/objection-handling"
+                    class="inline-flex items-center gap-1.5 text-[12px] font-semibold text-[#012d53] mt-2 no-underline hover:text-[#41be5e] transition-colors"
+                  >
+                    <i class="ri-book-open-line text-xs" aria-hidden="true"></i>
+                    Objection Handling
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Post 2 -->
+            <div class="p-4 rounded-xl bg-[#f4f7fa] border border-[#dce8f2]">
+              <div class="flex items-start gap-3">
+                <div
+                  class="w-9 h-9 rounded-full flex items-center justify-center shrink-0 text-white text-[12px] font-bold"
+                  style="background: linear-gradient(135deg, #1c2e44 0%, #4a6785 100%);"
+                  aria-hidden="true"
+                >DR</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-1 flex-wrap">
+                    <span class="text-[13px] font-bold text-[#012d53]">David Reyes</span>
+                    <span class="text-[11px] text-[#9CA3AF] font-medium">Compliance</span>
+                    <span class="text-[#dce8f2]" aria-hidden="true">·</span>
+                    <span class="text-[11px] text-[#9CA3AF]">Yesterday</span>
+                    <span class="ml-auto text-[10px] font-bold uppercase tracking-wider text-[#41be5e] bg-[#e6f7eb] px-2 py-0.5 rounded-full">New</span>
+                  </div>
+                  <p class="text-[13px] text-[#374151] leading-relaxed m-0">
+                    Reminder: updated call recording disclosure is required on ALL outbound calls effective April 1. The exact language is in the Compliance section — please review before your next session.
+                  </p>
+                  <a
+                    href="/browse/compliance-legal"
+                    class="inline-flex items-center gap-1.5 text-[12px] font-semibold text-[#012d53] mt-2 no-underline hover:text-[#41be5e] transition-colors"
+                  >
+                    <i class="ri-shield-check-line text-xs" aria-hidden="true"></i>
+                    Compliance & Legal
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Post 3 -->
+            <div class="p-4 rounded-xl bg-[#f4f7fa] border border-[#dce8f2]">
+              <div class="flex items-start gap-3">
+                <div
+                  class="w-9 h-9 rounded-full flex items-center justify-center shrink-0 text-white text-[12px] font-bold"
+                  style="background: linear-gradient(135deg, #0d5e2e 0%, #41be5e 100%);"
+                  aria-hidden="true"
+                >MK</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-1 flex-wrap">
+                    <span class="text-[13px] font-bold text-[#012d53]">Marcus Kim</span>
+                    <span class="text-[11px] text-[#9CA3AF] font-medium">Sales Director</span>
+                    <span class="text-[#dce8f2]" aria-hidden="true">·</span>
+                    <span class="text-[11px] text-[#9CA3AF]">Apr 7</span>
+                  </div>
+                  <p class="text-[13px] text-[#374151] leading-relaxed m-0">
+                    New SIC codes have been added to our approved industries list — several previously borderline verticals are now eligible. Review Funding Amounts before your next qualification call.
+                  </p>
+                  <a
+                    href="/browse/rbf-business-loans/funding-amounts"
+                    class="inline-flex items-center gap-1.5 text-[12px] font-semibold text-[#012d53] mt-2 no-underline hover:text-[#41be5e] transition-colors"
+                  >
+                    <i class="ri-money-dollar-circle-line text-xs" aria-hidden="true"></i>
+                    Funding Amounts
+                  </a>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- What's New -->
+        <section class="bg-white rounded-2xl p-5 shadow-[0_1px_4px_rgb(0_0_0/0.07)]">
+          <h2 class="text-[15px] font-bold text-[#012d53] m-0 mb-4 flex items-center gap-2">
+            <i class="ri-sparkling-line text-[#41be5e]" aria-hidden="true"></i>
+            What's New
+          </h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+
+            <div class="p-4 rounded-xl border-l-4 border-[#41be5e] bg-[#f4f7fa]">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-white bg-[#41be5e] px-2 py-0.5 rounded-full">Updated</span>
+                <span class="text-[11px] text-[#9CA3AF]">Apr 8</span>
+              </div>
+              <p class="text-[13px] font-bold text-[#012d53] m-0 mb-1">72-Hour Funding — Expanded</p>
+              <p class="text-[12px] text-[#6B7280] m-0 leading-relaxed">Eligible industries expanded. New SIC codes now qualify across Tier 1 and 2.</p>
+            </div>
+
+            <div class="p-4 rounded-xl border-l-4 border-[#1e5c9e] bg-[#f4f7fa]">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-white bg-[#1e5c9e] px-2 py-0.5 rounded-full">New Script</span>
+                <span class="text-[11px] text-[#9CA3AF]">Apr 5</span>
+              </div>
+              <p class="text-[13px] font-bold text-[#012d53] m-0 mb-1">Closing & Next Steps</p>
+              <p class="text-[12px] text-[#6B7280] m-0 leading-relaxed">New approved closing script covering document collection and 24h follow-up cadence.</p>
+            </div>
+
+            <div class="p-4 rounded-xl border-l-4 border-[#4a6785] bg-[#f4f7fa]">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-white bg-[#4a6785] px-2 py-0.5 rounded-full">Compliance</span>
+                <span class="text-[11px] text-[#9CA3AF]">Apr 1</span>
+              </div>
+              <p class="text-[13px] font-bold text-[#012d53] m-0 mb-1">Recording Disclosure Update</p>
+              <p class="text-[12px] text-[#6B7280] m-0 leading-relaxed">Updated required disclosure language effective Q2. Prohibited phrases list also revised.</p>
+            </div>
+
+            <div class="p-4 rounded-xl border-l-4 border-[#0e6b8e] bg-[#f4f7fa]">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-white bg-[#0e6b8e] px-2 py-0.5 rounded-full">Tool</span>
+                <span class="text-[11px] text-[#9CA3AF]">Mar 28</span>
+              </div>
+              <p class="text-[13px] font-bold text-[#012d53] m-0 mb-1">Salesforce Quick Guide v2</p>
+              <p class="text-[12px] text-[#6B7280] m-0 leading-relaxed">Updated for the new pipeline dashboard layout. Includes Opportunity stage shortcuts.</p>
+            </div>
+
+          </div>
+        </section>
+
+      </main>
+
+
+      <!-- ══════════════════════════════════════════════════════
+           RIGHT — Calendar · Schedule · Goals · Alerts
+      ══════════════════════════════════════════════════════ -->
+      <aside class="flex flex-col gap-4 lg:sticky lg:top-[80px]">
+
+        <!-- Calendar -->
+        <div class="bg-white rounded-2xl p-5 shadow-[0_1px_4px_rgb(0_0_0/0.07)]">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <p class="text-[30px] font-extrabold text-[#012d53] leading-none m-0">9</p>
+              <p class="text-[12px] text-[#9CA3AF] font-medium mt-0.5 m-0">Wednesday, April 2026</p>
+            </div>
+            <div
+              class="w-10 h-10 rounded-xl flex items-center justify-center"
+              style="background: linear-gradient(135deg, #012d53 0%, #1e5c9e 100%);"
+              aria-hidden="true"
+            >
+              <i class="ri-calendar-2-line text-white text-base"></i>
+            </div>
+          </div>
+
+          <div role="grid" aria-label="April 2026">
+            <div class="grid grid-cols-7 mb-1" role="row">
+              {['S','M','T','W','T','F','S'].map(d => (
+                <span role="columnheader" class="text-[10px] font-bold text-[#9CA3AF] text-center py-1">{d}</span>
+              ))}
+            </div>
+            {calWeeks.map(week => (
+              <div class="grid grid-cols-7" role="row">
+                {week.map(day => (
+                  day !== null ? (
+                    <span
+                      role="gridcell"
+                      class:list={[
+                        'text-[12px] text-center py-1.5 rounded-lg font-medium leading-none',
+                        day === todayDate
+                          ? 'bg-[#012d53] text-white font-bold'
+                          : 'text-[#374151] hover:bg-[#f4f7fa] cursor-default',
+                      ]}
+                      aria-current={day === todayDate ? 'date' : undefined}
+                    >
+                      {day}
+                    </span>
+                  ) : (
+                    <span role="gridcell" aria-hidden="true"></span>
+                  )
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- Today's Schedule -->
+        <div class="bg-white rounded-2xl p-5 shadow-[0_1px_4px_rgb(0_0_0/0.07)]">
+          <h2 class="text-[14px] font-bold text-[#012d53] m-0 mb-3 flex items-center gap-2">
+            <i class="ri-time-line text-[#41be5e]" aria-hidden="true"></i>
+            Today's Schedule
+          </h2>
+          <div class="flex flex-col gap-2">
+
+            <div class="flex items-center gap-3 p-3 rounded-xl bg-[#f4f7fa]">
+              <div class="w-1 h-10 rounded-full bg-[#41be5e] shrink-0" aria-hidden="true"></div>
+              <div class="flex-1 min-w-0">
+                <p class="text-[11px] text-[#9CA3AF] m-0">10:00 AM</p>
+                <p class="text-[13px] font-semibold text-[#012d53] m-0">Team Huddle</p>
+              </div>
+              <i class="ri-group-line text-[#9CA3AF] text-sm shrink-0" aria-hidden="true"></i>
+            </div>
+
+            <div class="flex items-center gap-3 p-3 rounded-xl bg-[#f4f7fa]">
+              <div class="w-1 h-10 rounded-full bg-[#1e5c9e] shrink-0" aria-hidden="true"></div>
+              <div class="flex-1 min-w-0">
+                <p class="text-[11px] text-[#9CA3AF] m-0">2:00 PM</p>
+                <p class="text-[13px] font-semibold text-[#012d53] m-0">Pipeline Review</p>
+              </div>
+              <i class="ri-bar-chart-line text-[#9CA3AF] text-sm shrink-0" aria-hidden="true"></i>
+            </div>
+
+            <div class="flex items-center gap-3 p-3 rounded-xl bg-[#f4f7fa]">
+              <div class="w-1 h-10 rounded-full bg-[#0e6b8e] shrink-0" aria-hidden="true"></div>
+              <div class="flex-1 min-w-0">
+                <p class="text-[11px] text-[#9CA3AF] m-0">4:30 PM</p>
+                <p class="text-[13px] font-semibold text-[#012d53] m-0">Manager 1:1</p>
+              </div>
+              <i class="ri-user-line text-[#9CA3AF] text-sm shrink-0" aria-hidden="true"></i>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Funding Goals -->
+        <div class="bg-white rounded-2xl p-5 shadow-[0_1px_4px_rgb(0_0_0/0.07)]">
+          <h2 class="text-[14px] font-bold text-[#012d53] m-0 mb-4 flex items-center gap-2">
+            <i class="ri-funds-line text-[#41be5e]" aria-hidden="true"></i>
+            Funding Goals
+          </h2>
+
+          <div class="mb-4">
+            <div class="flex justify-between items-baseline mb-1.5">
+              <span class="text-[12px] font-semibold text-[#374151]">This Week</span>
+              <span class="text-[12px] font-bold text-[#012d53]">
+                $47,200 <span class="font-medium text-[#9CA3AF]">/ $60k</span>
+              </span>
+            </div>
+            <div class="h-2 rounded-full bg-[#dce8f2] overflow-hidden" role="progressbar" aria-valuenow={79} aria-valuemin={0} aria-valuemax={100}>
+              <div class="h-full rounded-full bg-[#41be5e]" style="width: 79%"></div>
+            </div>
+            <p class="text-[11px] text-[#9CA3AF] mt-1 m-0">79% · $12,800 to go</p>
+          </div>
+
+          <div>
+            <div class="flex justify-between items-baseline mb-1.5">
+              <span class="text-[12px] font-semibold text-[#374151]">April</span>
+              <span class="text-[12px] font-bold text-[#012d53]">
+                $163,400 <span class="font-medium text-[#9CA3AF]">/ $200k</span>
+              </span>
+            </div>
+            <div class="h-2 rounded-full bg-[#dce8f2] overflow-hidden" role="progressbar" aria-valuenow={82} aria-valuemin={0} aria-valuemax={100}>
+              <div class="h-full rounded-full bg-[#1e5c9e]" style="width: 82%"></div>
+            </div>
+            <p class="text-[11px] text-[#9CA3AF] mt-1 m-0">82% · on track</p>
+          </div>
+        </div>
+
+        <!-- Alerts -->
+        <div class="bg-white rounded-2xl p-5 shadow-[0_1px_4px_rgb(0_0_0/0.07)]">
+          <h2 class="text-[14px] font-bold text-[#012d53] m-0 mb-3 flex items-center gap-2">
+            <i class="ri-notification-3-line text-[#41be5e]" aria-hidden="true"></i>
+            Alerts
+          </h2>
+          <div class="flex flex-col gap-2">
+
+            <div class="flex items-start gap-3 p-3 rounded-xl bg-[#fffbeb] border border-[#fde68a]">
+              <i class="ri-error-warning-line text-[#d97706] text-base mt-0.5 shrink-0" aria-hidden="true"></i>
+              <div>
+                <p class="text-[12px] font-semibold text-[#92400e] m-0">Rate adjustment — Apr 14</p>
+                <p class="text-[11px] text-[#b45309] m-0 mt-0.5">Factor rates updated for all Tier 2 products.</p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-3 p-3 rounded-xl bg-[#f0fdf4] border border-[#bbf7d0]">
+              <i class="ri-information-line text-[#059669] text-base mt-0.5 shrink-0" aria-hidden="true"></i>
+              <div>
+                <p class="text-[12px] font-semibold text-[#065f46] m-0">New application portal — Friday</p>
+                <p class="text-[11px] text-[#047857] m-0 mt-0.5">Training deck shared in #onboarding Slack.</p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-3 p-3 rounded-xl bg-[#fef2f2] border border-[#fecaca]">
+              <i class="ri-calendar-close-line text-[#dc2626] text-base mt-0.5 shrink-0" aria-hidden="true"></i>
+              <div>
+                <p class="text-[12px] font-semibold text-[#991b1b] m-0">Compliance training — Apr 30</p>
+                <p class="text-[11px] text-[#b91c1c] m-0 mt-0.5">21 days remaining. Complete via LMS.</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </aside>
 
     </div>
   </div>
 </BaseLayout>
 
 <style>
-.qa-title { color: #0A1628; }
-.qa-arrow { color: var(--cat-color, #012d53); }
+.cat-mini {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 2px 6px -1px rgb(0 0 0 / 0.15);
+}
+.cat-mini:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px -6px rgb(0 0 0 / 0.28);
+}
+.cat-mini:focus-visible {
+  outline: 2px solid white;
+  outline-offset: 2px;
+}
+
+.qa-title  { color: #0A1628; }
+.qa-arrow  { color: var(--cat-color, #012d53); }
 .qa-row:hover .qa-title { color: var(--cat-color, #012d53); }
-.qa-row:focus-visible { outline-color: var(--cat-color, #012d53); }
+.qa-row:focus-visible   { outline: 2px solid var(--cat-color, #012d53); outline-offset: -2px; }
+
+.feed-title { color: #0A1628; }
+.feed-article:hover .feed-title { color: #012d53; }
+.feed-article:focus-visible { outline: 2px solid #012d53; outline-offset: 2px; border-radius: 12px; }
 </style>

@@ -1,5 +1,6 @@
 ---
 title: The 72-Hour Funding Promise
+dateCreated: '2026-03-25'
 summary: How we deliver funding so quickly — and what the client needs to do to keep things moving.
 tags: [72 hours, fast, speed, funding, timeline, promise]
 readTime: 2 min

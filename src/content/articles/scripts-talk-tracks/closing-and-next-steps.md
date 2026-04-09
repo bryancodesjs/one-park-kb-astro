@@ -1,5 +1,6 @@
 ---
 title: Closing & Next Steps
+dateCreated: '2026-04-05'
 summary: How to end the call with a clear commitment and move the client toward funded.
 tags: [closing, next steps, commitment, follow up, close]
 readTime: 2 min

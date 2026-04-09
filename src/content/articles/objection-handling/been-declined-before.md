@@ -1,5 +1,6 @@
 ---
 title: '"I''ve been declined before"'
+dateCreated: '2026-03-08'
 summary: Addressing past bank rejections and positioning OPF's more flexible criteria.
 tags: [declined, rejected, bank, credit, approval, denied]
 readTime: 2 min

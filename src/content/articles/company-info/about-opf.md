@@ -1,5 +1,6 @@
 ---
 title: About One Park Financial
+dateCreated: '2026-02-01'
 summary: Quick overview of who we are, what we do, and why clients trust us.
 tags: [opf, about, company, history, overview]
 readTime: 2 min

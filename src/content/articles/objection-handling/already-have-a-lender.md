@@ -1,5 +1,6 @@
 ---
 title: '"I already have a lender"'
+dateCreated: '2026-03-15'
 summary: Exploring stacking opportunities or positioning OPF for future funding cycles.
 tags: [competitor, lender, existing, stacking, alternative]
 readTime: 2 min

@@ -1,5 +1,6 @@
 ---
 title: Call Recording Disclosure
+dateCreated: '2026-04-08'
 summary: Required disclosure language and when it must be delivered.
 tags: [recording, disclosure, legal, compliance, consent]
 readTime: 1 min

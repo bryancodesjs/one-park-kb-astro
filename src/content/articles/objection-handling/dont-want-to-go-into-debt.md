@@ -1,5 +1,6 @@
 ---
 title: '"I don''t want to go into debt"'
+dateCreated: '2026-02-28'
 summary: Explaining how revenue-based financing differs from traditional debt instruments.
 tags: [debt, loan, risk, rbf, repayment]
 readTime: 2 min

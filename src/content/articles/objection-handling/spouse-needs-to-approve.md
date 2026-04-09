@@ -1,5 +1,6 @@
 ---
 title: '"My spouse/partner needs to approve"'
+dateCreated: '2026-03-22'
 summary: Getting the decision-maker on the call or moving forward without them present.
 tags: [spouse, partner, approval, joint decision, husband, wife]
 readTime: 2 min

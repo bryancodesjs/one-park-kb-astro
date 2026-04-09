@@ -1,5 +1,6 @@
 ---
 title: Industries We Serve
+dateCreated: '2026-04-01'
 summary: A reference list of the business types OPF commonly funds.
 tags: [industries, eligibility, sectors, business types]
 readTime: 2 min

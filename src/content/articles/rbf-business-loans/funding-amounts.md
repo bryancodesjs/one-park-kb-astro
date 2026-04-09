@@ -1,5 +1,6 @@
 ---
 title: Funding Amounts & Ranges
+dateCreated: '2026-04-07'
 summary: General guidance on how much a client might qualify for based on monthly revenue.
 tags: [amount, how much, funding range, maximum, minimum]
 readTime: 2 min

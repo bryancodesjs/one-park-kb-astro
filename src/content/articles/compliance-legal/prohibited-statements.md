@@ -1,5 +1,6 @@
 ---
 title: Prohibited Statements on Calls
+dateCreated: '2026-03-28'
 summary: Things you must never say on a client call — review before your first shift.
 tags: [compliance, prohibited, do not say, legal, violations]
 readTime: 3 min

@@ -1,5 +1,6 @@
 ---
 title: How Repayment Works
+dateCreated: '2026-03-05'
 summary: Remittance schedules, factor rates, and what clients experience during repayment.
 tags: [repayment, remittance, factor rate, payment, daily, weekly]
 readTime: 2 min

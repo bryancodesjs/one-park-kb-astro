@@ -1,5 +1,6 @@
 ---
 title: Opening Call Script
+dateCreated: '2026-03-20'
 summary: How to open an inbound call — introduce yourself, confirm the lead, and set the agenda.
 tags: [opening, intro, greeting, script, inbound]
 readTime: 2 min

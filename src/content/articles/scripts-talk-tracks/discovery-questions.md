@@ -1,5 +1,6 @@
 ---
 title: Discovery Questions
+dateCreated: '2026-03-12'
 summary: The key questions to ask early in the call to understand the client's situation and needs.
 tags: [discovery, questions, qualifying, needs analysis]
 readTime: 2 min
