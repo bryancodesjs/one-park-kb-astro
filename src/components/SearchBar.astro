@@ -25,7 +25,7 @@ interface Props {
 const {
   articles,
   categories,
-  placeholder     = 'What do you want to know today?',
+  placeholder     = 'Search',
   inputId         = 'kb-search',
   dropdownId      = 'kb-search-dropdown',
   searchPageBase  = '/browse',
@@ -34,29 +34,28 @@ const {
 
 <div class="relative w-full" data-searchbar>
   <div class="flex items-center gap-3">
-    <div class="relative flex-1">
-      <label for={inputId} class="sr-only">Search the knowledge base</label>
+    <div class="relative flex-1 flex items-center justify-start rounded-full border border-[#dce8f2] bg-white pr-1">
+      <label for={inputId} class="sr-only">Search</label>
       <input
         id={inputId}
         type="search"
         placeholder={placeholder}
-        class="w-full h-[52px] pl-5 pr-4 rounded-full border border-[#dce8f2] bg-white text-[15px] text-[#0A1628] placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#012d53] transition-colors"
+        class="w-full h-[44px] pl-3   text-[15px] text-[#0A1628] placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#012d53] transition-colors"
         autocomplete="off"
         aria-haspopup="listbox"
         aria-expanded="false"
         aria-autocomplete="list"
         aria-controls={dropdownId}
       />
+      <button
+        type="button"
+        data-search-submit
+        class="h-[38px] w-[38px] flex items-center justify-center rounded-full bg-[#47BB60] text-white text-[14px] font-semibold flex items-center gap-2 hover:bg-[#37954B] transition-colors shrink-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#012d53]"
+        aria-label="Search"
+      >
+        <i class="ri-search-line text-base" aria-hidden="true"></i>
+      </button>
     </div>
-    <button
-      type="button"
-      data-search-submit
-      class="h-[52px] px-6 rounded-full bg-[#47BB60] text-white text-[14px] font-semibold flex items-center gap-2 hover:bg-[#37954B] transition-colors shrink-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#012d53]"
-      aria-label="Search"
-    >
-      Search
-      <i class="ri-search-line text-base" aria-hidden="true"></i>
-    </button>
   </div>
 
   <div
