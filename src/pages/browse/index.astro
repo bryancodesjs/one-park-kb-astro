@@ -91,10 +91,10 @@ const searchCategories = categories.map(c => ({ slug: stripMd(c.id), name: c.dat
       <div>
         <div class="mb-4 flex items-center gap-2">
           <h2 class="text-[16px] font-bold text-[#0A1628] m-0">
-            Results for "<span class="text-[#014189]">{searchQuery}</span>"
+            Results for "<span class="text-[#012d53]">{searchQuery}</span>"
           </h2>
           <span class="text-[13px] text-[#9CA3AF]">({searchResults.length})</span>
-          <a href="/browse" class="ml-auto text-[13px] font-semibold text-[#6B7280] hover:text-[#014189] flex items-center gap-1 no-underline rounded">
+          <a href="/browse" class="ml-auto text-[13px] font-semibold text-[#6B7280] hover:text-[#012d53] flex items-center gap-1 no-underline rounded">
             <i class="ri-close-line" aria-hidden="true"></i>
             Clear
           </a>
@@ -133,12 +133,12 @@ const searchCategories = categories.map(c => ({ slug: stripMd(c.id), name: c.dat
             <section aria-labelledby={`cat-${catSlug}`} class="mb-12">
               <div class="flex items-center justify-between mb-4">
                 <div class="flex items-center gap-2.5">
-                  <div class="w-8 h-8 rounded-lg bg-[#E2EDFE] flex items-center justify-center shrink-0" aria-hidden="true">
-                    <i class:list={[cat.data.icon, 'text-[#014189] text-sm']} aria-hidden="true"></i>
+                  <div class="w-8 h-8 rounded-lg bg-[#dce8f2] flex items-center justify-center shrink-0" aria-hidden="true">
+                    <i class:list={[cat.data.icon, 'text-[#012d53] text-sm']} aria-hidden="true"></i>
                   </div>
                   <h2 id={`cat-${catSlug}`} class="text-[16px] font-bold text-[#0A1628] m-0">{cat.data.name}</h2>
                 </div>
-                <a href={`/browse/${catSlug}`} class="text-[13px] font-semibold text-[#014189] hover:text-[#002A5A] no-underline flex items-center gap-1 transition-colors rounded">
+                <a href={`/browse/${catSlug}`} class="text-[13px] font-semibold text-[#012d53] hover:text-[#011f3b] no-underline flex items-center gap-1 transition-colors rounded">
                   See all <i class="ri-arrow-right-s-line" aria-hidden="true"></i>
                 </a>
               </div>

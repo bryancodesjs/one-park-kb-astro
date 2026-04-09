@@ -1,11 +1,13 @@
 @import "tailwindcss";
 
 @theme {
-  --color-opf-blue: #014189;
-  --color-opf-dark-blue: #002A5A;
-  --color-opf-light-blue: #E2EDFE;
-  --color-opf-green: #8CED1E;
-  --color-surface: #F7FAFD;
+  --color-mck-navy: #012d53;
+  --color-mck-navy-dark: #011f3b;
+  --color-mck-navy-mid: #1e5c9e;
+  --color-mck-light: #dce8f2;
+  --color-mck-green: #41be5e;
+  --color-mck-green-dark: #2fa14c;
+  --color-surface: #f4f7fa;
   --font-family-sans: 'Manrope', sans-serif;
 }
 
@@ -75,8 +77,8 @@ html {
 
 /* Script box */
 .article-content .script-box {
-  background: #E2EDFE;
-  border-left: 4px solid #014189;
+  background: #dce8f2;
+  border-left: 4px solid #012d53;
   border-radius: 12px;
   padding: 1rem 1.25rem;
   margin: 1.25rem 0;
@@ -87,21 +89,21 @@ html {
   font-weight: 800;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #014189;
+  color: #012d53;
   margin-bottom: 0.5rem !important;
 }
 
 .article-content .script-box p:last-child {
   margin-bottom: 0;
   font-style: italic;
-  color: #002A5A;
+  color: #011f3b;
   font-weight: 500;
 }
 
 /* Tip box */
 .article-content .tip-box {
-  background: #f0fce4;
-  border-left: 4px solid #8CED1E;
+  background: #e6f7eb;
+  border-left: 4px solid #41be5e;
   border-radius: 12px;
   padding: 1rem 1.25rem;
   margin: 1.25rem 0;
@@ -112,13 +114,13 @@ html {
   font-weight: 800;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #3a6b00;
+  color: #166534;
   margin-bottom: 0.5rem !important;
 }
 
 .article-content .tip-box p:last-child {
   margin-bottom: 0;
-  color: #1a3d00;
+  color: #0d5e2e;
 }
 
 /* Warning box */
@@ -156,11 +158,11 @@ html {
 .article-content td {
   padding: 0.65rem 0.9rem;
   text-align: left;
-  border: 1px solid #E2EDFE;
+  border: 1px solid #dce8f2;
 }
 
 .article-content th {
-  background: #F7FAFD;
+  background: #f4f7fa;
   font-weight: 700;
   color: #0A1628;
   font-size: 13px;
@@ -169,7 +171,7 @@ html {
 }
 
 .article-content tr:nth-child(even) td {
-  background: #F7FAFD;
+  background: #f4f7fa;
 }
 
 .article-content td:first-child {

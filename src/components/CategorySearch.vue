@@ -10,7 +10,7 @@
         v-model="localSearch"
         type="search"
         :placeholder="placeholder"
-        class="w-full h-[46px] pl-10 pr-4 rounded-full border border-[#E2EDFE] bg-white text-[14px] text-[#0A1628] placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#014189] transition-colors"
+        class="w-full h-[46px] pl-10 pr-4 rounded-full border border-[#dce8f2] bg-white text-[14px] text-[#0A1628] placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#012d53] transition-colors"
       />
     </div>
 
@@ -20,7 +20,7 @@
         v-for="article in filtered"
         :key="article.slug"
         :href="`/browse/${article.categorySlug}/${article.slug}`"
-        class="res-card group flex flex-col gap-3 p-5 rounded-2xl bg-white transition-all duration-200 no-underline border border-[#E2EDFE] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+        class="res-card group flex flex-col gap-3 p-5 rounded-2xl bg-white transition-all duration-200 no-underline border border-[#dce8f2] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
         :style="`--cat-color: ${categoryColor}`"
         :aria-label="article.title"
       >
@@ -54,7 +54,7 @@ const props = defineProps<{
   inputId?: string
 }>()
 
-const categoryColor = props.categoryColor ?? '#014189'
+const categoryColor = props.categoryColor ?? '#012d53'
 const placeholder   = props.placeholder   ?? 'Search articles…'
 const inputId       = props.inputId       ?? 'cat-search'
 

@@ -11,14 +11,14 @@ const {
   slug,
   categorySlug,
   title,
-  categoryColor = '#014189',
-  categoryBg = '#E2EDFE',
+  categoryColor = '#012d53',
+  categoryBg = '#dce8f2',
 } = Astro.props
 ---
 
 <a
   href={`/browse/${categorySlug}/${slug}`}
-  class="res-card group flex flex-col gap-3 p-5 rounded-2xl bg-white transition-all duration-200 no-underline border border-[#E2EDFE] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+  class="res-card group flex flex-col gap-3 p-5 rounded-2xl bg-white transition-all duration-200 no-underline border border-[#dce8f2] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
   style={`--cat-color: ${categoryColor}; --cat-bg: ${categoryBg};`}
   aria-label={title}
 >

@@ -47,12 +47,12 @@ const { Content } = await render(entry)
     <!-- Breadcrumb -->
     <nav aria-label="Breadcrumb" class="mb-8">
       <ol class="flex items-center gap-2 text-[13px] text-[#9CA3AF] font-medium list-none p-0 m-0 flex-wrap">
-        <li><a href="/" class="hover:text-[#014189] transition-colors no-underline">Home</a></li>
+        <li><a href="/" class="hover:text-[#012d53] transition-colors no-underline">Home</a></li>
         <li aria-hidden="true"><i class="ri-arrow-right-s-line"></i></li>
-        <li><a href="/browse" class="hover:text-[#014189] transition-colors no-underline">Browse</a></li>
+        <li><a href="/browse" class="hover:text-[#012d53] transition-colors no-underline">Browse</a></li>
         <li aria-hidden="true"><i class="ri-arrow-right-s-line"></i></li>
         <li>
-          <a href={`/browse/${category}`} class="hover:text-[#014189] transition-colors no-underline">
+          <a href={`/browse/${category}`} class="hover:text-[#012d53] transition-colors no-underline">
             {cat?.data.name}
           </a>
         </li>
@@ -64,17 +64,17 @@ const { Content } = await render(entry)
     </nav>
 
     <!-- Article header -->
-    <div class="mb-8 pb-7 border-b border-[#E2EDFE]">
+    <div class="mb-8 pb-7 border-b border-[#dce8f2]">
       <div class="flex items-center gap-2 mb-4">
         <a
           href={`/browse/${category}`}
           class="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest no-underline transition-colors"
-          style={cat ? `color: ${cat.data.color}` : 'color: #014189'}
+          style={cat ? `color: ${cat.data.color}` : 'color: #012d53'}
         >
           <i class:list={[cat?.data.icon ?? 'ri-folder-line', 'text-xs']} aria-hidden="true"></i>
           {cat?.data.name}
         </a>
-        <span class="text-[#E2EDFE]" aria-hidden="true">·</span>
+        <span class="text-[#dce8f2]" aria-hidden="true">·</span>
         <span class="text-[11px] text-[#9CA3AF] font-medium">{entry.data.readTime} read</span>
       </div>
 
@@ -88,7 +88,7 @@ const { Content } = await render(entry)
 
       <div class="flex flex-wrap gap-2" role="list" aria-label="Article tags">
         {entry.data.tags.map(tag => (
-          <span role="listitem" class="text-[12px] font-semibold text-[#014189] bg-[#E2EDFE] px-3 py-1 rounded-full">
+          <span role="listitem" class="text-[12px] font-semibold text-[#012d53] bg-[#dce8f2] px-3 py-1 rounded-full">
             {tag}
           </span>
         ))}

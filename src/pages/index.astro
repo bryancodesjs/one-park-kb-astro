@@ -35,7 +35,7 @@ const quickAccessArticles = allArticles
       readTime: a.data.readTime,
       categoryName: cat?.data.name ?? '',
       categoryGradient: cat?.data.gradient ?? '',
-      categoryColor: cat?.data.color ?? '#2563EB',
+      categoryColor: cat?.data.color ?? '#012d53',
       categoryIcon: cat?.data.icon ?? 'ri-file-text-line',
     }
   })
@@ -71,7 +71,7 @@ const recentSearches = [
     <!-- ── Hero — light blue gradient band ──────────────────────────────────── -->
     <div
       class="w-full flex flex-col items-center px-6 relative overflow-hidden"
-      style="background: linear-gradient(180deg, #DBEAFE 0%, #EFF6FF 60%, #F7FAFD 100%);"
+      style="background: linear-gradient(180deg, #dce8f2 0%, #ecf2f7 60%, #f4f7fa 100%);"
     >
       <img class="absolute left-[-200px] top-[40px] opacity-80" width="460" src="/hero-decor-1.png" alt="" aria-hidden="true" />
       <img class="absolute right-[-20px] bottom-[-20px] opacity-50" width="180" src="/hero-decor-2.png" alt="" aria-hidden="true" />
@@ -79,10 +79,10 @@ const recentSearches = [
       <div class="flex flex-col py-14">
         <!-- Heading -->
         <div class="text-center mb-8">
-          <h1 class="text-[23.04px] md:text-[27.65px] font-extrabold text-[#1E3A5F] tracking-tight leading-tight">
+          <h1 class="text-[23.04px] md:text-[27.65px] font-extrabold text-[#012d53] tracking-tight leading-tight">
             Welcome back, Christina
           </h1>
-          <p class="text-[15px] text-[#3B6EA5] mt-2 font-medium">
+          <p class="text-[15px] text-[#2a5c8a] mt-2 font-medium">
             Find quick answers to keep your call moving.
           </p>
         </div>
@@ -99,14 +99,14 @@ const recentSearches = [
 
           <!-- Recent searches -->
           <div class="mt-4" aria-label="Recent searches">
-            <p class="text-[12px] font-semibold text-[#3B6EA5] uppercase tracking-widest mb-2.5">
+            <p class="text-[12px] font-semibold text-[#2a5c8a] uppercase tracking-widest mb-2.5">
               Recent searches
             </p>
             <div class="flex flex-wrap gap-2">
               {recentSearches.map(search => (
                 <a
                   href={`/browse?q=${encodeURIComponent(search)}`}
-                  class="text-[13px] font-medium text-[#1E40AF] border border-[#BFDBFE] bg-white/80 px-3.5 py-1.5 rounded-full hover:bg-white hover:border-[#2563EB] transition-colors max-w-[200px] truncate focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#2563EB] focus-visible:outline-offset-2 no-underline"
+                  class="text-[13px] font-medium text-[#012d53] border border-[#b5cfe6] bg-white/80 px-3.5 py-1.5 rounded-full hover:bg-white hover:border-[#012d53] transition-colors max-w-[200px] truncate focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#012d53] focus-visible:outline-offset-2 no-underline"
                 >
                   {search}
                 </a>
@@ -126,7 +126,7 @@ const recentSearches = [
           <h2 class="text-[18px] font-bold text-[#0A1628] m-0">Browse categories</h2>
           <a
             href="/browse"
-            class="text-[13px] font-semibold text-[#2563EB] hover:text-[#1E40AF] transition-colors no-underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#2563EB] focus-visible:outline-offset-2 rounded"
+            class="text-[13px] font-semibold text-[#012d53] hover:text-[#41be5e] transition-colors no-underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#012d53] focus-visible:outline-offset-2 rounded"
           >
             View all
           </a>
@@ -150,22 +150,22 @@ const recentSearches = [
       <section class="w-full mx-auto max-w-[640px]">
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-[18px] font-bold text-[#0A1628] m-0 flex items-center gap-2">
-            <i class="ri-flashlight-line text-[#F97316]" aria-hidden="true"></i>
+            <i class="ri-flashlight-line text-[#41be5e]" aria-hidden="true"></i>
             Quick access
           </h2>
           <a
             href="/browse"
-            class="text-[13px] font-semibold text-[#2563EB] hover:text-[#1E40AF] transition-colors no-underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#2563EB] focus-visible:outline-offset-2 rounded"
+            class="text-[13px] font-semibold text-[#012d53] hover:text-[#41be5e] transition-colors no-underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#012d53] focus-visible:outline-offset-2 rounded"
           >
             All resources
           </a>
         </div>
 
-        <div class="flex flex-col divide-y divide-[#E2EDFE] border border-[#E2EDFE] rounded-2xl overflow-hidden bg-white">
+        <div class="flex flex-col divide-y divide-[#dce8f2] border border-[#dce8f2] rounded-2xl overflow-hidden bg-white">
           {quickAccessArticles.map(article => (
             <a
               href={`/browse/${article.categorySlug}/${article.slug}`}
-              class="qa-row flex items-center gap-4 px-5 py-4 hover:bg-[#F7FAFD] transition-colors group no-underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+              class="qa-row flex items-center gap-4 px-5 py-4 hover:bg-[#f4f7fa] transition-colors group no-underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
               style={`--cat-color: ${article.categoryColor}`}
             >
               <div
@@ -198,7 +198,7 @@ const recentSearches = [
 
 <style>
 .qa-title { color: #0A1628; }
-.qa-arrow { color: var(--cat-color, #2563EB); }
-.qa-row:hover .qa-title { color: var(--cat-color, #2563EB); }
-.qa-row:focus-visible { outline-color: var(--cat-color, #2563EB); }
+.qa-arrow { color: var(--cat-color, #012d53); }
+.qa-row:hover .qa-title { color: var(--cat-color, #012d53); }
+.qa-row:focus-visible { outline-color: var(--cat-color, #012d53); }
 </style>

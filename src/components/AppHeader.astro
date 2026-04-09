@@ -4,7 +4,7 @@ const isHome    = pathname === '/'
 const isBrowse  = pathname.startsWith('/browse')
 ---
 
-<header class="sticky top-0 z-50 bg-[#2563EB]">
+<header class="sticky top-0 z-50 bg-[#012d53]">
   <div class="max-w-[1440px] mx-auto px-6 h-[64px] flex items-center justify-center relative">
 
     <!-- Brand -->
@@ -14,10 +14,9 @@ const isBrowse  = pathname.startsWith('/browse')
         class="flex items-center gap-2.5 no-underline"
         aria-label="Knowledge Base — Home"
       >
-        <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0" aria-hidden="true">
-          <img src="/logo-white.svg" alt="" />
+        <div class=" rounded-full flex items-center justify-center shrink-0" aria-hidden="true">
+          <img src="/logo.svg" class="h-8" alt="" />
         </div>
-        <span class="font-semibold text-white text-[17px] tracking-tight">Knowledge Base</span>
       </a>
     </div>
 
@@ -67,7 +66,7 @@ const isBrowse  = pathname.startsWith('/browse')
   <!-- Coming soon toast -->
   <div
     id="coming-soon-toast"
-    class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-[#1E40AF] text-white text-sm font-semibold px-5 py-3 rounded-full shadow-lg z-[100] opacity-0 pointer-events-none transition-opacity duration-200"
+    class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-[#011f3b] text-white text-sm font-semibold px-5 py-3 rounded-full shadow-lg z-[100] opacity-0 pointer-events-none transition-opacity duration-200"
     role="status"
     aria-live="polite"
   >
@@ -97,7 +96,7 @@ const isBrowse  = pathname.startsWith('/browse')
 .nav-btn i { font-weight: 100 !important; }
 
 .nav-btn--active {
-  color: #2563EB;
+  color: #012d53;
   background-color: #ffffff;
 }
 
