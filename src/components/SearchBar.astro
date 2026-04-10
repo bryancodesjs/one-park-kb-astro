@@ -168,10 +168,14 @@ const {
     }
 
     function close() {
-      input.value = "";
       dropdown.classList.add("hidden");
       input.setAttribute("aria-expanded", "false");
       resultEls = [];
+    }
+
+    function clear() {
+      input.value = "";
+      close();
     }
 
     function focusResult(idx) {
@@ -194,7 +198,7 @@ const {
         return;
       }
       if (e.key === "Escape") {
-        close();
+        clear();
         return;
       }
       if (e.key === "ArrowDown") {
@@ -214,7 +218,7 @@ const {
         cur <= 0 ? input.focus() : focusResult(cur - 1);
       }
       if (e.key === "Escape") {
-        close();
+        clear();
         input.focus();
       }
     });
