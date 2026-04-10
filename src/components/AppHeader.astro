@@ -1,12 +1,40 @@
 ---
-const pathname = Astro.url.pathname
-const isHome    = pathname === '/'
-const isBrowse  = pathname.startsWith('/browse')
+import SearchBar from "./SearchBar.astro";
+import { getCollection } from "astro:content";
+
+const pathname = Astro.url.pathname;
+const isHome = pathname === "/";
+const isBrowse = pathname.startsWith("/browse");
+
+const stripMd = (id: string) => id.replace(/\.md$/, "");
+
+const allCategories = await getCollection("categories");
+const allArticles = await getCollection("articles");
+const categories = allCategories.sort((a, b) => a.data.order - b.data.order);
+const featuredCategories = categories.filter((c) => c.data.featured);
+
+const searchArticles = allArticles.map((a) => {
+  const [catSlug, articleFile] = a.id.split("/");
+  return {
+    slug: stripMd(articleFile),
+    categorySlug: catSlug,
+    title: a.data.title,
+    summary: a.data.summary,
+    tags: a.data.tags,
+  };
+});
+
+const searchCategories = categories.map((c) => ({
+  slug: stripMd(c.id),
+  name: c.data.name,
+  icon: c.data.icon,
+}));
 ---
 
 <header class="sticky top-0 z-50 bg-[#012d53]">
-  <div class="max-w-[1440px] mx-auto px-6 h-[64px] flex items-center justify-center relative">
-
+  <div
+    class="max-w-[1440px] mx-auto px-6 h-[64px] flex items-center justify-center relative"
+  >
     <!-- Brand -->
     <div class="absolute left-6">
       <a
@@ -14,17 +42,23 @@ const isBrowse  = pathname.startsWith('/browse')
         class="flex items-center gap-2.5 no-underline"
         aria-label="Knowledge Base — Home"
       >
-        <div class=" rounded-full flex items-center justify-center shrink-0" aria-hidden="true">
+        <div
+          class="rounded-full flex items-center justify-center shrink-0"
+          aria-hidden="true"
+        >
           <img src="/logo-new.svg" class="w-[160px]" alt="" />
         </div>
       </a>
     </div>
 
     <!-- Navigation -->
-    <nav aria-label="Main navigation" class="flex items-center gap-1">
+    <nav aria-label="Main navigation" class="hidden items-center gap-1">
       <a
         href="/"
-        class:list={['nav-btn', isHome ? 'nav-btn--active' : 'nav-btn--inactive']}
+        class:list={[
+          "nav-btn",
+          isHome ? "nav-btn--active" : "nav-btn--inactive",
+        ]}
         aria-label="Search — Home"
       >
         <i class="ri-layout-vertical-line text-xl" aria-hidden="true"></i>
@@ -33,37 +67,82 @@ const isBrowse  = pathname.startsWith('/browse')
 
       <a
         href="/browse"
-        class:list={['nav-btn', isBrowse ? 'nav-btn--active' : 'nav-btn--inactive']}
+        class:list={[
+          "nav-btn",
+          isBrowse ? "nav-btn--active" : "nav-btn--inactive",
+        ]}
         aria-label="Knowledge Browser"
       >
         <i class="ri-book-shelf-line text-xl" aria-hidden="true"></i>
         Browse
       </a>
 
-      <button class="nav-btn nav-btn--inactive" aria-label="Calls (coming soon)" id="calls-btn">
+      <button
+        class="nav-btn nav-btn--inactive"
+        aria-label="Calls (coming soon)"
+        id="calls-btn"
+      >
         <i class="ri-customer-service-2-line text-xl" aria-hidden="true"></i>
         Calls
       </button>
 
-      <button class="nav-btn nav-btn--inactive" aria-label="Archives (coming soon)" id="archives-btn">
+      <button
+        class="nav-btn nav-btn--inactive"
+        aria-label="Archives (coming soon)"
+        id="archives-btn"
+      >
         <i class="ri-archive-drawer-line text-xl" aria-hidden="true"></i>
         Archives
       </button>
 
-      <button class="nav-btn nav-btn--inactive" aria-label="Settings (coming soon)" id="settings-btn">
+      <button
+        class="nav-btn nav-btn--inactive"
+        aria-label="Settings (coming soon)"
+        id="settings-btn"
+      >
         <i class="ri-settings-3-line text-xl" aria-hidden="true"></i>
         Settings
       </button>
     </nav>
 
+    <div class="w-full max-w-2xl flex items-center gap-5">
+      <a
+        href="/"
+        class:list={["nav-btn ", "text-white"]}
+        aria-label="Search — Home"
+      >
+        <i class="ri-home-line text-2xl" aria-hidden="true"></i>
+      </a>
+      <SearchBar
+        articles={searchArticles}
+        categories={searchCategories}
+        inputId="home-search"
+        dropdownId="home-search-dropdown"
+      />
+      <a
+        href="/browse"
+        class:list={["nav-btn", "text-white"]}
+        aria-label="Knowledge Browser"
+      >
+        <i class="ri-book-shelf-line text-2xl" aria-hidden="true"></i>
+      </a>
+    </div>
     <!-- User avatar -->
     <div class="absolute right-6">
-      <div
-        class="w-9 h-9 rounded-full flex items-center justify-center overflow-hidden shrink-0"
-        style="background: rgba(255,255,255,0.2); border: 1.5px solid rgba(255,255,255,0.35);"
-        aria-label="Signed in as Christina"
-      >
-        <span class="text-[13px] font-bold text-white" aria-hidden="true">CR</span>
+      <div class="flex items-center justify-end text-right gap-3">
+        <div class="flex flex-col text-white">
+          <h3 class="font-semibold">Ruth Santana</h3>
+          <p class="opacity-60 text-sm">Funding Specialist</p>
+        </div>
+        <div
+          class="w-9 h-9 rounded-full flex items-center justify-center overflow-hidden shrink-0"
+          style="background: rgba(255,255,255,0.2); border: 1.5px solid rgba(255,255,255,0.35);"
+          aria-label="Signed in as Christina"
+        >
+          <span class="text-[13px] font-bold text-white" aria-hidden="true"
+            >RS</span
+          >
+        </div>
       </div>
     </div>
   </div>
@@ -80,60 +159,64 @@ const isBrowse  = pathname.startsWith('/browse')
 </header>
 
 <style>
-.nav-btn {
-  min-width: 2.5rem;
-  height: 2.5rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 600;
-  gap: 0.3rem;
-  padding: 0 0.75rem;
-  border-radius: 0.75rem;
-  border: 0;
-  background: transparent;
-  font-size: 0.8125rem;
-  cursor: pointer;
-  text-decoration: none;
-  transition: background-color 150ms ease, color 150ms ease;
-}
+  .nav-btn {
+    min-width: 2.5rem;
+    height: 2.5rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    gap: 0.3rem;
+    padding: 0 0.75rem;
+    border-radius: 0.75rem;
+    border: 0;
+    background: transparent;
+    font-size: 0.8125rem;
+    cursor: pointer;
+    text-decoration: none;
+    transition:
+      background-color 150ms ease,
+      color 150ms ease;
+  }
 
-.nav-btn i { font-weight: 100 !important; }
+  .nav-btn i {
+    font-weight: 100 !important;
+  }
 
-.nav-btn--active {
-  color: #012d53;
-  background-color: #ffffff;
-}
+  .nav-btn--active {
+    color: #012d53;
+    background-color: #ffffff;
+  }
 
-.nav-btn--inactive {
-  color: rgba(255, 255, 255, 0.75);
-}
+  .nav-btn--inactive {
+    color: rgba(255, 255, 255, 0.75);
+  }
 
-.nav-btn--inactive:hover {
-  color: #ffffff;
-  background-color: rgba(255, 255, 255, 0.15);
-}
+  .nav-btn--inactive:hover {
+    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.15);
+  }
 
-.nav-btn:focus-visible {
-  outline: 2px solid rgba(255, 255, 255, 0.8);
-  outline-offset: 2px;
-}
+  .nav-btn:focus-visible {
+    outline: 2px solid rgba(255, 255, 255, 0.8);
+    outline-offset: 2px;
+  }
 </style>
 
 <script>
-function showToast() {
-  const toast = document.getElementById('coming-soon-toast')
-  if (!toast || toast.classList.contains('showing')) return
-  toast.classList.add('showing')
-  toast.style.opacity = '1'
-  toast.style.pointerEvents = 'auto'
-  setTimeout(() => {
-    toast.style.opacity = '0'
-    toast.style.pointerEvents = 'none'
-    setTimeout(() => toast.classList.remove('showing'), 200)
-  }, 2200)
-}
+  function showToast() {
+    const toast = document.getElementById("coming-soon-toast");
+    if (!toast || toast.classList.contains("showing")) return;
+    toast.classList.add("showing");
+    toast.style.opacity = "1";
+    toast.style.pointerEvents = "auto";
+    setTimeout(() => {
+      toast.style.opacity = "0";
+      toast.style.pointerEvents = "none";
+      setTimeout(() => toast.classList.remove("showing"), 200);
+    }, 2200);
+  }
 
-document.getElementById('archives-btn')?.addEventListener('click', showToast)
-document.getElementById('settings-btn')?.addEventListener('click', showToast)
+  document.getElementById("archives-btn")?.addEventListener("click", showToast);
+  document.getElementById("settings-btn")?.addEventListener("click", showToast);
 </script>
