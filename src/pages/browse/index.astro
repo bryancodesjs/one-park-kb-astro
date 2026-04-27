@@ -10,15 +10,17 @@ const stripMd = (id: string) => id.replace(/\.md$/, '')
 const allCategories = await getCollection('categories')
 const allArticles   = await getCollection('articles')
 
-const categories = allCategories.sort((a, b) => a.data.order - b.data.order)
+const categories = allCategories
+  .filter(c => !c.data.draft)
+  .sort((a, b) => a.data.order - b.data.order)
 
 function articleCount(catSlug: string) {
-  return allArticles.filter(a => a.id.startsWith(catSlug + '/')).length
+  return allArticles.filter(a => a.id.startsWith(catSlug + '/') && !a.data.draft).length
 }
 
 function articlesFor(catSlug: string, limit = 3) {
   return allArticles
-    .filter(a => a.id.startsWith(catSlug + '/'))
+    .filter(a => a.id.startsWith(catSlug + '/') && !a.data.draft)
     .sort((a, b) => a.data.order - b.data.order)
     .slice(0, limit)
     .map(a => {
@@ -38,6 +40,7 @@ const searchQuery = Astro.url.searchParams.get('q') ?? ''
 
 const searchResults = searchQuery.length >= 2
   ? allArticles
+      .filter(a => !a.data.draft)
       .filter(a =>
         a.data.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         a.data.summary.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -56,14 +59,30 @@ const searchResults = searchQuery.length >= 2
       })
   : []
 
-const searchArticles = allArticles.map(a => {
+const searchArticles = allArticles.filter(a => !a.data.draft).map(a => {
   const [cs, articleFile] = a.id.split('/')
   return { slug: stripMd(articleFile), categorySlug: cs, title: a.data.title, summary: a.data.summary, tags: a.data.tags }
 })
 const searchCategories = categories.map(c => ({ slug: stripMd(c.id), name: c.data.name, icon: c.data.icon }))
+
+const groupMeta = {
+  processes:      { label: 'Processes & Procedures', icon: 'ri-flow-chart',         accent: '#012d53' },
+  scripts:        { label: 'Scripts & Flows',        icon: 'ri-mic-line',           accent: '#0e6b8e' },
+  policy:         { label: 'Policy',                 icon: 'ri-shield-keyhole-line', accent: '#9333ea' },
+  'call-library': { label: 'Call Library',           icon: 'ri-headphone-line',     accent: '#b45309' },
+} as const
+
+type GroupKey = keyof typeof groupMeta
+const groups: GroupKey[] = ['processes', 'scripts', 'policy', 'call-library']
+
+const grouped = groups.map(g => ({
+  key: g,
+  meta: groupMeta[g],
+  categories: categories.filter(c => c.data.group === g),
+}))
 ---
 
-<BaseLayout title="Browse — One Park Knowledge Base">
+<BaseLayout title="Browse — McKenzie Capital Knowledge Base">
   <div class="max-w-5xl mx-auto px-6 py-10">
 
     <div class="mb-8">
@@ -71,7 +90,7 @@ const searchCategories = categories.map(c => ({ slug: stripMd(c.id), name: c.dat
         Knowledge Browser
       </h1>
       <p class="text-[15px] text-[#6B7280] font-medium">
-        Browse all categories or search for what you need.
+        Browse by group or search across every entry.
       </p>
     </div>
 
@@ -109,46 +128,54 @@ const searchCategories = categories.map(c => ({ slug: stripMd(c.id), name: c.dat
         )}
       </div>
     ) : (
-      <div>
-        <section aria-labelledby="categories-heading" class="mb-12">
-          <h2 id="categories-heading" class="text-[17px] font-bold text-[#0A1628] mb-5">All categories</h2>
-          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-            {categories.map(cat => (
-              <CategoryCard
-                slug={stripMd(cat.id)}
-                name={cat.data.name}
-                icon={cat.data.icon}
-                gradient={cat.data.gradient}
-                showCount={true}
-                articleCount={articleCount(stripMd(cat.id))}
-              />
-            ))}
-          </div>
-        </section>
+      <div class="flex flex-col gap-12">
+        {grouped.map(group => (
+          <section aria-labelledby={`grp-${group.key}`}>
+            <div class="flex items-center gap-2.5 mb-5">
+              <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={`background: ${group.meta.accent}; color: #fff;`} aria-hidden="true">
+                <i class:list={[group.meta.icon, 'text-sm']}></i>
+              </div>
+              <h2 id={`grp-${group.key}`} class="text-[18px] font-extrabold tracking-tight m-0" style={`color: ${group.meta.accent};`}>{group.meta.label}</h2>
+            </div>
 
-        {categories.map(cat => {
-          const catSlug = stripMd(cat.id)
-          return (
-            <section aria-labelledby={`cat-${catSlug}`} class="mb-12">
-              <div class="flex items-center justify-between mb-4">
-                <div class="flex items-center gap-2.5">
-                  <div class="w-8 h-8 rounded-lg bg-[#dce8f2] flex items-center justify-center shrink-0" aria-hidden="true">
-                    <i class:list={[cat.data.icon, 'text-[#012d53] text-sm']} aria-hidden="true"></i>
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 mb-6">
+              {group.categories.map(cat => (
+                <CategoryCard
+                  slug={stripMd(cat.id)}
+                  name={cat.data.name}
+                  icon={cat.data.icon}
+                  gradient={cat.data.gradient}
+                  showCount={true}
+                  articleCount={articleCount(stripMd(cat.id))}
+                />
+              ))}
+            </div>
+
+            {group.categories.map(cat => {
+              const catSlug = stripMd(cat.id)
+              const arts = articlesFor(catSlug, 3)
+              if (arts.length === 0) return null
+              return (
+                <div class="mb-6">
+                  <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center gap-2">
+                      <i class:list={[cat.data.icon, 'text-sm']} style={`color: ${cat.data.color};`} aria-hidden="true"></i>
+                      <h3 class="text-[14px] font-bold text-[#0A1628] m-0">{cat.data.name}</h3>
+                    </div>
+                    <a href={`/browse/${catSlug}`} class="text-[12px] font-semibold no-underline hover:underline" style={`color: ${cat.data.color};`}>
+                      See all <i class="ri-arrow-right-s-line" aria-hidden="true"></i>
+                    </a>
                   </div>
-                  <h2 id={`cat-${catSlug}`} class="text-[16px] font-bold text-[#0A1628] m-0">{cat.data.name}</h2>
+                  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {arts.map(article => (
+                      <ResourceCard slug={article.slug} categorySlug={article.categorySlug} title={article.title} categoryColor={article.categoryColor} categoryBg={article.categoryBg} />
+                    ))}
+                  </div>
                 </div>
-                <a href={`/browse/${catSlug}`} class="text-[13px] font-semibold text-[#012d53] hover:text-[#011f3b] no-underline flex items-center gap-1 transition-colors rounded">
-                  See all <i class="ri-arrow-right-s-line" aria-hidden="true"></i>
-                </a>
-              </div>
-              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {articlesFor(catSlug, 3).map(article => (
-                  <ResourceCard slug={article.slug} categorySlug={article.categorySlug} title={article.title} categoryColor={article.categoryColor} categoryBg={article.categoryBg} />
-                ))}
-              </div>
-            </section>
-          )
-        })}
+              )
+            })}
+          </section>
+        ))}
       </div>
     )}
   </div>

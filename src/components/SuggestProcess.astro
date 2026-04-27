@@ -1,0 +1,100 @@
+---
+// "Suggest a process" prompt card.
+// Backend wiring deferred — when the lightweight admin lands, this form will
+// post into the same pipeline that creates announcements/articles.
+// For now: disabled submission with a clear "coming soon" affordance.
+---
+
+<section
+  class="suggest-card relative overflow-hidden rounded-2xl p-5 shadow-[0_1px_4px_rgb(0_0_0/0.07)]"
+  aria-labelledby="suggest-heading"
+>
+  <div class="suggest-card__bg" aria-hidden="true"></div>
+
+  <div class="relative">
+    <div class="flex items-start gap-3 mb-4">
+      <div
+        class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 text-white"
+        style="background: linear-gradient(135deg, #c026d3 0%, #fb7185 100%);"
+        aria-hidden="true"
+      >
+        <i class="ri-lightbulb-flash-line text-base"></i>
+      </div>
+      <div class="flex-1 min-w-0">
+        <h2
+          id="suggest-heading"
+          class="text-[15px] font-bold text-[#012d53] m-0 leading-tight"
+        >
+          What process would you like to see?
+        </h2>
+        <p class="text-[12px] text-[#6B7280] mt-1 m-0 leading-relaxed">
+          Send it to QA — they'll spec it and bring it to executives for review.
+        </p>
+      </div>
+    </div>
+
+    <form
+      class="flex flex-col gap-2"
+      data-suggest-form
+      onsubmit="return false;"
+      aria-describedby="suggest-status"
+    >
+      <label class="sr-only" for="suggest-category">Category</label>
+      <select
+        id="suggest-category"
+        class="w-full h-[40px] rounded-xl border border-[#dce8f2] bg-white px-3 text-[13px] text-[#0A1628] focus:outline-none focus:border-[#012d53] transition-colors"
+        disabled
+      >
+        <option>Process / Procedure</option>
+        <option>Script / Flow</option>
+        <option>Policy</option>
+        <option>Call Library example</option>
+      </select>
+      <label class="sr-only" for="suggest-body">Suggestion</label>
+      <textarea
+        id="suggest-body"
+        rows="3"
+        placeholder="Describe the process you'd like to see documented…"
+        class="w-full rounded-xl border border-[#dce8f2] bg-white px-3 py-2 text-[13px] text-[#0A1628] placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#012d53] transition-colors resize-none"
+        disabled></textarea>
+      <div class="flex items-center justify-between gap-3 pt-1">
+        <p
+          id="suggest-status"
+          class="text-[11px] font-semibold text-[#9333ea] m-0 flex items-center gap-1.5"
+        >
+          <i class="ri-time-line" aria-hidden="true"></i>
+          Coming soon — wiring up after admin launch
+        </p>
+        <button
+          type="submit"
+          class="h-[36px] px-4 rounded-full bg-[#9333ea]/30 text-white/80 text-[12px] font-bold cursor-not-allowed"
+          disabled
+        >
+          Send to QA
+        </button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<style>
+  .suggest-card {
+    background: #ffffff;
+  }
+  .suggest-card__bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(
+        90% 60% at 100% 0%,
+        rgba(192, 38, 211, 0.08) 0%,
+        transparent 60%
+      ),
+      radial-gradient(
+        80% 60% at 0% 100%,
+        rgba(251, 113, 133, 0.07) 0%,
+        transparent 65%
+      );
+    pointer-events: none;
+  }
+</style>

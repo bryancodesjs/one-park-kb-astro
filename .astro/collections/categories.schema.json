@@ -29,6 +29,22 @@
           "type": "boolean",
           "default": false
         },
+        "group": {
+          "type": "string",
+          "enum": [
+            "processes",
+            "scripts",
+            "policy",
+            "call-library"
+          ]
+        },
+        "parent": {
+          "type": "string"
+        },
+        "draft": {
+          "type": "boolean",
+          "default": false
+        },
         "$schema": {
           "type": "string"
         }

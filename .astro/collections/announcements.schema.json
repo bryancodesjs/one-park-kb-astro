@@ -1,36 +1,39 @@
 {
-  "$ref": "#/definitions/articles",
+  "$ref": "#/definitions/announcements",
   "definitions": {
-    "articles": {
+    "announcements": {
       "type": "object",
       "properties": {
         "title": {
           "type": "string"
         },
-        "dateCreated": {
+        "author": {
           "type": "string"
         },
-        "summary": {
+        "role": {
           "type": "string"
         },
-        "tags": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "readTime": {
+        "initials": {
           "type": "string"
         },
-        "order": {
-          "type": "number",
-          "default": 99
+        "avatarGradient": {
+          "type": "string",
+          "default": "linear-gradient(135deg, #012d53 0%, #1e5c9e 100%)"
         },
-        "quickAccess": {
+        "datePosted": {
+          "type": "string"
+        },
+        "isNew": {
           "type": "boolean",
           "default": false
         },
-        "author": {
+        "linkText": {
+          "type": "string"
+        },
+        "linkHref": {
+          "type": "string"
+        },
+        "linkIcon": {
           "type": "string"
         },
         "draft": {
@@ -43,10 +46,9 @@
       },
       "required": [
         "title",
-        "dateCreated",
-        "summary",
-        "tags",
-        "readTime"
+        "author",
+        "initials",
+        "datePosted"
       ],
       "additionalProperties": false
     }

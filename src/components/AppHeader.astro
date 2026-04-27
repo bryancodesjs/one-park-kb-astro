@@ -1,17 +1,13 @@
 ---
 import SearchBar from "./SearchBar.astro";
+import HeaderDecor from "./HeaderDecor.astro";
 import { getCollection } from "astro:content";
-
-const pathname = Astro.url.pathname;
-const isHome = pathname === "/";
-const isBrowse = pathname.startsWith("/browse");
 
 const stripMd = (id: string) => id.replace(/\.md$/, "");
 
 const allCategories = await getCollection("categories");
 const allArticles = await getCollection("articles");
 const categories = allCategories.sort((a, b) => a.data.order - b.data.order);
-const featuredCategories = categories.filter((c) => c.data.featured);
 
 const searchArticles = allArticles.map((a) => {
   const [catSlug, articleFile] = a.id.split("/");
@@ -31,113 +27,46 @@ const searchCategories = categories.map((c) => ({
 }));
 ---
 
-<header class="sticky top-0 z-50 bg-[#012d53]">
-  <div
-    class="max-w-[1440px] mx-auto px-6 h-[64px] flex items-center justify-center relative"
-  >
-    <!-- Brand -->
-    <div class="absolute left-6">
+<header class="kb-header sticky top-0 z-50">
+  <!-- Colored stripe with drifting decor + tagline -->
+  <div class="kb-header__stripe relative">
+    <HeaderDecor />
+    <div
+      class="relative z-10 max-w-[1440px] mx-auto px-6 h-[88px] flex items-center justify-between gap-6"
+    >
+      <!-- Brand -->
       <a
         href="/"
-        class="flex items-center gap-2.5 no-underline"
-        aria-label="Knowledge Base — Home"
+        class="flex items-center gap-2.5 no-underline shrink-0"
+        aria-label="McKenzie Capital Knowledge Base — Home"
       >
-        <div
-          class="rounded-full flex items-center justify-center shrink-0"
-          aria-hidden="true"
+        <img src="/logo-new.svg" class="w-[148px]" alt="McKenzie Capital" />
+      </a>
+
+      <!-- Tagline -->
+      <div class="hidden md:flex flex-col items-center text-center px-4 min-w-0">
+        <p
+          class="text-white/95 text-[18px] md:text-[20px] font-extrabold tracking-tight leading-tight m-0 whitespace-nowrap"
         >
-          <img src="/logo-new.svg" class="w-[160px]" alt="" />
-        </div>
-      </a>
-    </div>
+          Don't chase dreams &mdash; collect them.
+        </p>
+        <p
+          class="text-white/55 text-[11px] font-semibold uppercase tracking-[0.18em] mt-1 m-0"
+        >
+          McKenzie Capital · Collections Knowledge Base
+        </p>
+      </div>
 
-    <!-- Navigation -->
-    <nav aria-label="Main navigation" class="hidden items-center gap-1">
-      <a
-        href="/"
-        class:list={[
-          "nav-btn",
-          isHome ? "nav-btn--active" : "nav-btn--inactive",
-        ]}
-        aria-label="Search — Home"
-      >
-        <i class="ri-layout-vertical-line text-xl" aria-hidden="true"></i>
-        Home
-      </a>
-
-      <a
-        href="/browse"
-        class:list={[
-          "nav-btn",
-          isBrowse ? "nav-btn--active" : "nav-btn--inactive",
-        ]}
-        aria-label="Knowledge Browser"
-      >
-        <i class="ri-book-shelf-line text-xl" aria-hidden="true"></i>
-        Browse
-      </a>
-
-      <button
-        class="nav-btn nav-btn--inactive"
-        aria-label="Calls (coming soon)"
-        id="calls-btn"
-      >
-        <i class="ri-customer-service-2-line text-xl" aria-hidden="true"></i>
-        Calls
-      </button>
-
-      <button
-        class="nav-btn nav-btn--inactive"
-        aria-label="Archives (coming soon)"
-        id="archives-btn"
-      >
-        <i class="ri-archive-drawer-line text-xl" aria-hidden="true"></i>
-        Archives
-      </button>
-
-      <button
-        class="nav-btn nav-btn--inactive"
-        aria-label="Settings (coming soon)"
-        id="settings-btn"
-      >
-        <i class="ri-settings-3-line text-xl" aria-hidden="true"></i>
-        Settings
-      </button>
-    </nav>
-
-    <div class="w-full max-w-2xl flex items-center gap-5">
-      <a
-        href="/"
-        class:list={["nav-btn ", "text-white"]}
-        aria-label="Search — Home"
-      >
-        <i class="ri-home-line text-2xl" aria-hidden="true"></i>
-      </a>
-      <SearchBar
-        articles={searchArticles}
-        categories={searchCategories}
-        inputId="home-search"
-        dropdownId="home-search-dropdown"
-      />
-      <a
-        href="/browse"
-        class:list={["nav-btn", "text-white"]}
-        aria-label="Knowledge Browser"
-      >
-        <i class="ri-book-shelf-line text-2xl" aria-hidden="true"></i>
-      </a>
-    </div>
-    <!-- User avatar -->
-    <div class="absolute right-6">
-      <div class="flex items-center justify-end text-right gap-3">
-        <div class="flex flex-col text-white">
-          <h3 class="font-semibold">Ruth Lorenzo</h3>
-          <p class="opacity-60 text-sm">Rehab Specialist</p>
+      <!-- User -->
+      <div class="flex items-center justify-end text-right gap-3 shrink-0">
+        <div class="hidden sm:flex flex-col text-white leading-tight">
+          <span class="font-semibold text-[14px]">Ruth Lorenzo</span>
+          <span class="opacity-60 text-[12px]">Rehab Specialist</span>
         </div>
         <div
           class="w-9 h-9 rounded-full flex items-center justify-center overflow-hidden shrink-0"
-          style="background: rgba(255,255,255,0.2); border: 1.5px solid rgba(255,255,255,0.35);"
-          aria-label="Signed in as Christina"
+          style="background: rgba(255,255,255,0.22); border: 1.5px solid rgba(255,255,255,0.4);"
+          aria-label="Signed in as Ruth Lorenzo"
         >
           <span class="text-[13px] font-bold text-white" aria-hidden="true"
             >RL</span
@@ -147,76 +76,101 @@ const searchCategories = categories.map((c) => ({
     </div>
   </div>
 
-  <!-- Coming soon toast -->
-  <div
-    id="coming-soon-toast"
-    class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-[#011f3b] text-white text-sm font-semibold px-5 py-3 rounded-full shadow-lg z-[100] opacity-0 pointer-events-none transition-opacity duration-200"
-    role="status"
-    aria-live="polite"
-  >
-    Coming soon — stay tuned!
+  <!-- Search sub-bar -->
+  <div class="kb-header__searchbar">
+    <div
+      class="max-w-[1440px] mx-auto px-6 py-3 flex items-center gap-3 md:gap-4"
+    >
+      <a
+        href="/"
+        class="kb-iconbtn shrink-0"
+        aria-label="Knowledge Base — Home"
+      >
+        <i class="ri-home-5-line text-lg" aria-hidden="true"></i>
+      </a>
+      <a
+        href="/browse"
+        class="kb-iconbtn shrink-0"
+        aria-label="Browse all categories"
+      >
+        <i class="ri-book-shelf-line text-lg" aria-hidden="true"></i>
+      </a>
+      <div class="flex-1 min-w-0">
+        <SearchBar
+          articles={searchArticles}
+          categories={searchCategories}
+          inputId="home-search"
+          dropdownId="home-search-dropdown"
+        />
+      </div>
+    </div>
   </div>
 </header>
 
 <style>
-  .nav-btn {
-    min-width: 2.5rem;
-    height: 2.5rem;
+  .kb-header__stripe {
+    background:
+      radial-gradient(120% 120% at 0% 0%, #1e5c9e 0%, transparent 60%),
+      radial-gradient(120% 120% at 100% 0%, #0e6b8e 0%, transparent 55%),
+      linear-gradient(120deg, #012d53 0%, #0a3a6b 50%, #0e6b8e 100%);
+    background-size:
+      200% 200%,
+      200% 200%,
+      300% 300%;
+    animation: kb-stripe 18s ease-in-out infinite;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  @keyframes kb-stripe {
+    0%,
+    100% {
+      background-position:
+        0% 0%,
+        100% 0%,
+        0% 50%;
+    }
+    50% {
+      background-position:
+        20% 30%,
+        80% 20%,
+        100% 50%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .kb-header__stripe {
+      animation: none;
+    }
+  }
+
+  .kb-header__searchbar {
+    background: #ffffff;
+    border-bottom: 1px solid #dce8f2;
+  }
+
+  .kb-iconbtn {
+    width: 40px;
+    height: 40px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-weight: 600;
-    gap: 0.3rem;
-    padding: 0 0.75rem;
-    border-radius: 0.75rem;
-    border: 0;
-    background: transparent;
-    font-size: 0.8125rem;
-    cursor: pointer;
+    border-radius: 12px;
+    color: #012d53;
+    background: #f4f7fa;
     text-decoration: none;
     transition:
       background-color 150ms ease,
-      color 150ms ease;
+      color 150ms ease,
+      transform 150ms ease;
   }
 
-  .nav-btn i {
-    font-weight: 100 !important;
+  .kb-iconbtn:hover {
+    background: #dce8f2;
+    color: #011f3b;
   }
 
-  .nav-btn--active {
-    color: #012d53;
-    background-color: #ffffff;
-  }
-
-  .nav-btn--inactive {
-    color: rgba(255, 255, 255, 0.75);
-  }
-
-  .nav-btn--inactive:hover {
-    color: #ffffff;
-    background-color: rgba(255, 255, 255, 0.15);
-  }
-
-  .nav-btn:focus-visible {
-    outline: 2px solid rgba(255, 255, 255, 0.8);
+  .kb-iconbtn:focus-visible {
+    outline: 2px solid #012d53;
     outline-offset: 2px;
   }
 </style>
-
-<script>
-  function showToast() {
-    const toast = document.getElementById("coming-soon-toast");
-    if (!toast || toast.classList.contains("showing")) return;
-    toast.classList.add("showing");
-    toast.style.opacity = "1";
-    toast.style.pointerEvents = "auto";
-    setTimeout(() => {
-      toast.style.opacity = "0";
-      toast.style.pointerEvents = "none";
-      setTimeout(() => toast.classList.remove("showing"), 200);
-    }, 2200);
-  }
-
-  document.getElementById("archives-btn")?.addEventListener("click", showToast);
-  document.getElementById("settings-btn")?.addEventListener("click", showToast);
-</script>

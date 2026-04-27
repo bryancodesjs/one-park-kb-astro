@@ -11,6 +11,20 @@
   --font-family-sans: 'Manrope', sans-serif;
 }
 
+/* Semantic group tokens — content groups + accents */
+:root {
+  --c-process: #012d53;
+  --c-process-2: #1e5c9e;
+  --c-scripts: #0e6b8e;
+  --c-scripts-2: #22d3ee;
+  --c-policy: #9333ea;
+  --c-policy-2: #c026d3;
+  --c-call: #b45309;
+  --c-call-2: #fb7185;
+  --c-accent-warm: #fb7185;
+  --c-accent-cool: #22d3ee;
+}
+
 * {
   font-family: 'Manrope', sans-serif;
 }

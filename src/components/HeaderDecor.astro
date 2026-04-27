@@ -1,0 +1,73 @@
+---
+// Decorative "dream strip" — drifting Remix icons behind the header tagline.
+// Pure decoration, marked aria-hidden, gated on prefers-reduced-motion.
+const icons = [
+  { i: 'ri-car-fill',         t: '6%',  d: '0s',   s: '46s' },
+  { i: 'ri-home-4-fill',      t: '64%', d: '-8s',  s: '52s' },
+  { i: 'ri-plane-fill',       t: '18%', d: '-22s', s: '40s' },
+  { i: 'ri-ship-fill',        t: '74%', d: '-14s', s: '58s' },
+  { i: 'ri-money-dollar-circle-fill', t: '32%', d: '-30s', s: '44s' },
+  { i: 'ri-sun-fill',         t: '52%', d: '-40s', s: '50s' },
+  { i: 'ri-vip-crown-fill',   t: '12%', d: '-18s', s: '54s' },
+  { i: 'ri-gem-fill',         t: '78%', d: '-34s', s: '48s' },
+  { i: 'ri-rocket-fill',      t: '40%', d: '-12s', s: '56s' },
+  { i: 'ri-trophy-fill',      t: '24%', d: '-26s', s: '42s' },
+]
+---
+
+<div class="header-decor" aria-hidden="true">
+  {
+    icons.map((it) => (
+      <i
+        class:list={[it.i, 'header-decor-icon']}
+        style={`top: ${it.t}; animation-delay: ${it.d}; animation-duration: ${it.s};`}
+      />
+    ))
+  }
+</div>
+
+<style>
+  .header-decor {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .header-decor-icon {
+    position: absolute;
+    left: -8%;
+    color: rgba(255, 255, 255, 0.16);
+    font-size: 22px;
+    transform: translate3d(0, 0, 0);
+    animation-name: drift;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    will-change: transform, opacity;
+  }
+
+  @keyframes drift {
+    0% {
+      transform: translateX(0) translateY(0) rotate(-2deg);
+      opacity: 0;
+    }
+    8% {
+      opacity: 1;
+    }
+    92% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateX(120vw) translateY(-6px) rotate(2deg);
+      opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .header-decor-icon {
+      animation: none;
+      opacity: 0.18;
+    }
+  }
+</style>
